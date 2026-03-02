@@ -10,13 +10,13 @@ a{
 }
 
 body{
-    background-color: aqua;
+    background-color: #6DE4F9;
 }
 
 .header{
-    height: 15vh;
-    padding-inline: 1px;
-    background-color: red;
+    height: 25vh;
+
+    background-image: linear-gradient(to bottom, #008cff, #6de4f900);
 }
 
 .nav{
@@ -24,11 +24,16 @@ body{
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-left: 30px;
+}
+
+.nav .log{
+    margin-left: 50px;
 }
 
 .logo img{
-    width: 150px;
-    height: 150px;
+    width: 300px;
+    height: 300px;
 }
 
 .nav-list{
