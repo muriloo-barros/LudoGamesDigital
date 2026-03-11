@@ -106,6 +106,7 @@ main{
     display: block;
     position: relative;
     z-index: -1;
+    margin-top: 50vh;
     width: 100vw;
     height: auto;
 }
