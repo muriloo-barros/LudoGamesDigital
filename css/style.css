@@ -28,10 +28,10 @@ body{
     display: flex;
     flex-direction: column;
     cursor: none;
-    cursor: hover none;
 }
 
 .header{
+    position: absolute;
     height: 25vh;
     background-image: linear-gradient(to bottom, #00b3ff, #6de4f900);
 }
