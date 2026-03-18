@@ -30,17 +30,34 @@ body{
     cursor: none;
 }
 
-.header{
+.header-wrap{
     height: 25vh;
-    background-image: linear-gradient(to bottom, #00b3ff, #6de4f900);
+    background-color: transparent;
     position: sticky;
-    transition: background-image 1s ease;
     top: 0;
-    z-index: 10;
 }
 
-header.scrolled {
-    background-image: linear-gradient(to bottom, #1add00, #1eff0000);
+.grad-layer {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.55s ease;
+  pointer-events: none;
+}
+
+
+#azul  {
+    background-image: linear-gradient(to bottom, rgba(0, 179, 255), rgba(0, 179, 255, 0));
+    opacity: 1;
+}
+
+#verde { 
+    background-image: linear-gradient(to bottom, rgba(26, 221, 0), rgba(26, 221, 0, 0));
+    opacity: 0;
+}
+
+#marrom { 
+    background-image: linear-gradient(to bottom, rgba(130,80,30,0.90),  rgba(130,80,30,0));
+    opacity: 0;
 }
 
 .nav{
@@ -49,6 +66,7 @@ header.scrolled {
     justify-content: space-between;
     align-items: center;
     margin-left: 30px;
+    z-index: 10;
 }
 
 .nav .logo{
@@ -71,7 +89,8 @@ header.scrolled {
     display: flex;
     gap: 3vw;
     margin-right: 27vw;
-    height: 10vh;
+    height: 5vh;
+    z-index: 10;
 }
 
 .nav-list a{
@@ -92,6 +111,7 @@ header.scrolled {
     position: absolute;
     left: 16%;
     top: 32%;
+    z-index: -1;
 }
 
 .nuvem2{
@@ -100,6 +120,7 @@ header.scrolled {
     position: absolute;
     right: 40%;
     top: 40%;
+    z-index: -1;
 }
 
 .nuvem3{
@@ -108,6 +129,7 @@ header.scrolled {
     position: absolute;
     right: 10%;
     top: 30%;
+    z-index: -1;
 }
 
 main{
