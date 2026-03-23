@@ -50,3 +50,24 @@ new window.VLibras.Widget('https://vlibras.gov.br/app');
     });
 
 });
+
+// muda a cor da header conforme o scroll
+
+const layers = [
+  { el: document.getElementById('azul'),  threshold: 0   },
+  { el: document.getElementById('verde'), threshold: 750  },
+  { el: document.getElementById('marrom'), threshold: 1850  },
+];
+
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+
+  // Encontra qual camada está ativa
+  let active = 0;
+  layers.forEach((l, i) => { if (y >= l.threshold) active = i; });
+
+  // Mostra só a ativa, esconde as outras
+  layers.forEach((l, i) => {
+    l.el.style.opacity = i === active ? '1' : '0';
+  });
+});
