@@ -167,9 +167,26 @@ main {
   color: white;
   height: 50vh;
   width: 80vw;
-  border: solid 50px #6B3A1D;
-  border-radius: 25%;
+  background-color: #6B3A1D;
+  border-radius: 300px;
   padding: 25px;
+  align-items: center; /* Alinha verticalmente ao centro */
+  justify-content: center;
+  display: flex;
+}
+
+.box2{
+  height: 40vh;
+  width: 75vw;
+  background-color: red;
+  border-radius: 300px;
+}
+
+.box3{
+  height: 20vh;
+  width: 75vw;
+  background-color: rgb(4, 0, 255);
+  border-radius: 300px;
 }
 
 .texto-footer {
