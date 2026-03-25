@@ -159,11 +159,26 @@ main {
   height: auto;
 }
 
+.caixa {
+  background-image: url(../imgs/fundo-texto.png);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin: 15vh;
+  position: absolute;
+  align-self: center;
+  top: 18%;
+  font-size: 2em;
+  color: white;
+  padding: 9rem 12rem;
+  text-align: justify;
+}
+
 .box{
   position: absolute;
   left: 50%;
   transform: translate(-50%, -50%);
-  top: 70%;
+  top: 60%;
   height: 45vh;
   width: 80vw;
   background-color: transparent;
