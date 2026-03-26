@@ -53,6 +53,50 @@ document.addEventListener("DOMContentLoaded", function () {
     processarFila();
   }
 
+  // ─── Passarinho do header ──────────────────────────────────────
+  const passarinho = document.getElementById("passarinho");
+  const linksNav   = document.querySelectorAll(".nav-list a");
+  const navList    = document.querySelector(".nav-list");
+  let timeoutSumir = null;
+ 
+  function moverPassarinho(link) {
+    const rect    = link.getBoundingClientRect();
+    const navRect = document.querySelector(".nav").getBoundingClientRect();
+    const esquerda = rect.left - navRect.left + rect.width / 2 - 30;
+ 
+    clearTimeout(timeoutSumir);
+ 
+    if (passarinho.classList.contains("visivel")) {
+      passarinho.classList.add("pousando");
+      setTimeout(() => passarinho.classList.remove("pousando"), 300);
+    }
+ 
+    passarinho.style.left = esquerda + "px";
+    passarinho.classList.add("visivel");
+  }
+ 
+  function esconderPassarinho() {
+    timeoutSumir = setTimeout(() => {
+      passarinho.classList.remove("visivel");
+    }, 400);
+  }
+ 
+  // mouseenter em cada link move o passarinho
+  linksNav.forEach(function (link) {
+    link.addEventListener("mouseenter", function () {
+      clearTimeout(timeoutSumir); // cancela qualquer sumiço pendente
+      moverPassarinho(this);
+    });
+  });
+ 
+  // só o nav-list controla o sumiço — evita bug entre links
+  navList.addEventListener("mouseleave", esconderPassarinho);
+  navList.addEventListener("mouseenter", function () {
+    clearTimeout(timeoutSumir);
+  });
+ 
+  document.querySelector(".nav-list").addEventListener("mouseleave", esconderPassarinho);
+
   // Leitura ao passar o mouse (menu)
   document.querySelectorAll(".narra-texto").forEach(function (el) {
     el.addEventListener("mouseenter", falarTexto);
