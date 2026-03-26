@@ -421,7 +421,7 @@ body {
   color: #3d1f0a;
 }
 
-/* ─── Nuvens / Prikito 2 ─────────────────────────────────────────────────────── */
+/* ─── Nuvens / Prikito 2 / Minhoca ─────────────────────────────────────────────────────── */
 .nuvem {
   width: 500px;
   height: 500px;
@@ -613,6 +613,50 @@ main {
 
 .box4:hover, .box5:hover, .box6:hover{
   transform: scale(1.1);
+}
+
+.titulo-videos{
+  font-size: 3em;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 75%;
+  left: 50%;
+  color: #fff;
+}
+
+.videos-yt{
+  position: absolute;
+  display: flex;
+  gap: 25px;
+  justify-content: space-between;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 84%;
+  z-index: var(--z-conteudo);
+}
+
+.video-1, .video-2{
+  position: relative;
+  z-index: var(--z-conteudo);
+}
+
+.minhoca{
+  position: absolute;
+  right: 9%;
+  top: 72%;
+  z-index: var(--z-fundo);
+  width: 500px;
+  height: 442px;
+}
+
+.minhoca-rotate{
+  position: absolute;
+  left: 6%;
+  top: 78%;
+  z-index: var(--z-fundo);
+  width: 625px;
+  height: 552px;
+  transform: rotate(30deg);
 }
 
 .texto-footer {
