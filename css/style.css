@@ -12,11 +12,8 @@
   padding: 0;
   box-sizing: border-box;
   list-style: none;
-  cursor: none;
 }
 
-/* cursor:none só no body — herdado por todos os filhos.
-   Não aplicar no * para não poluir especificidade. */
 body {
   cursor: none;
 }
@@ -38,12 +35,59 @@ a {
   100% { transform: scale(1); }
 }
 
+/* ─── Acessibilidade: reduz movimento ───────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ─── Acessibilidade: sem animações (toggle JS) ─────────────────── */
+body.sem-animacoes *, body.sem-animacoes *::before, body.sem-animacoes *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* ─── Acessibilidade: alto contraste ────────────────────────────── */
+body.alto-contraste {
+  background-color: #000 !important;
+  filter: contrast(1.5);
+}
+
+body.alto-contraste .nav-list a,
+body.alto-contraste .text,
+body.alto-contraste .text2,
+body.alto-contraste .texto-footer {
+  color: #FFFF00 !important;
+}
+
+/* ─── Acessibilidade: tamanhos de fonte ─────────────────────────── */
+body.fonte-pequena { font-size: 14px; }
+body.fonte-normal  { font-size: 16px; }
+body.fonte-grande  { font-size: 20px; }
+
+body.fonte-grande .text  { font-size: 4.5em; }
+body.fonte-grande .text2 { font-size: 3em; }
+body.fonte-grande .caixa { font-size: 2.4em; }
+
+body.fonte-pequena .text  { font-size: 3.2em; }
+body.fonte-pequena .text2 { font-size: 2em; }
+body.fonte-pequena .caixa { font-size: 1.6em; }
+
+/* ─── Acessibilidade: foco visível ──────────────────────────────── */
+:focus-visible {
+  outline: 3px solid #FEE764;
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
 /* ─── Body ───────────────────────────────────────────────────────── */
 body {
   background-color: #6DE4F9;
   font-family: "Margarine", sans-serif;
   overflow-x: hidden;
-   min-height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -55,6 +99,7 @@ body {
   position: sticky;
   top: 0;
   z-index: var(--z-header);
+  width: 100vw;
 }
 
 .grad-layer {
@@ -99,20 +144,230 @@ body {
   list-style: none;
   display: flex;
   gap: 3vw;
-  margin-right: 27vw;
   height: 5vh;
   z-index: var(--z-header);
+  align-items: center;
 }
 
 .nav-list a {
   font-size: 5ch;
-  color: rgb(255, 255, 255);
+  color: white;
   padding-block: 16px;
   transition: color 0.3s ease;
 }
 
 .nav-list a:hover {
   color: #FEE764;
+}
+
+/* ─── Botão de acessibilidade no header ──────────────────────────── */
+.btn-acessibilidade {
+  width: 50px;
+  height: 50px;
+  background: #A15A40;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+  transition: transform 0.3s ease, background 0.3s ease;
+  z-index: var(--z-header);
+  position: relative;
+}
+
+.btn-acessibilidade:hover {
+  transform: rotate(45deg);
+  background: #FEE764;
+}
+
+.btn-acessibilidade:hover svg {
+  fill: #3d1f0a;
+}
+
+.btn-acessibilidade svg {
+  width: 22px;
+  height: 22px;
+  fill: white;
+  transition: fill 0.3s ease;
+}
+
+/* ─── Overlay ────────────────────────────────────────────────────── */
+.sb-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: calc(var(--z-overlay) - 1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.sb-overlay.ativo {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ─── Sidebar de acessibilidade ──────────────────────────────────── */
+.sidebar-acessibilidade {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 100vh;
+  background: #3d1f0a;
+  z-index: var(--z-overlay);
+  transform: translateX(100%);
+  transition: transform 0.35s ease;
+  overflow-y: auto;
+  padding: 24px 20px;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.3);
+}
+
+.sidebar-acessibilidade.aberta {
+  transform: translateX(0);
+}
+
+.sb-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.sb-titulo {
+  color: white;
+  font-size: 24px;
+  font-family: "Margarine", sans-serif;
+  font-weight: normal;
+}
+
+.sb-fechar {
+  background: #A15A40;
+  border: none;
+  color: white;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.sb-fechar:hover {
+  background: #FEE764;
+  color: #3d1f0a;
+}
+
+.sb-secao {
+  margin-bottom: 8px;
+}
+
+.sb-secao-titulo {
+  color: #e8a87c;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+  font-family: sans-serif;
+  font-weight: 700;
+}
+
+.sb-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  gap: 10px;
+}
+
+.sb-label {
+  color: white;
+  font-size: 16px;
+  font-family: "Margarine", sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sb-divider {
+  border: none;
+  border-top: 1px solid #6B3A1D;
+  margin: 16px 0;
+}
+
+/* ─── Toggle switch ──────────────────────────────────────────────── */
+.toggle {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.slider-tog {
+  position: absolute;
+  inset: 0;
+  background: #6B3A1D;
+  border-radius: 28px;
+  transition: background 0.3s ease;
+}
+
+.slider-tog::before {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  left: 3px;
+  bottom: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.toggle input:checked + .slider-tog {
+  background: #FEE764;
+}
+
+.toggle input:checked + .slider-tog::before {
+  transform: translateX(24px);
+  background: #3d1f0a;
+}
+
+/* ─── Botões de opção (P/M/G, velocidade) ────────────────────────── */
+.btn-grupo {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.btn-op {
+  background: #6B3A1D;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-family: "Margarine", sans-serif;
+  font-size: 14px;
+  transition: background 0.2s ease;
+  min-width: 36px;
+}
+
+.btn-op:hover {
+  background: #A15A40;
+}
+
+.btn-op.ativo {
+  background: #FEE764;
+  color: #3d1f0a;
 }
 
 /* ─── Nuvens ─────────────────────────────────────────────────────── */
@@ -174,7 +429,7 @@ main {
   text-align: justify;
 }
 
-.box{
+.box {
   position: absolute;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -184,13 +439,13 @@ main {
   background-color: transparent;
   border-radius: 300px;
   padding: 25px;
-  align-items: center; /* Alinha verticalmente ao centro */
+  align-items: center;
   justify-content: center;
   display: flex;
   isolation: isolate;
 }
 
-.box2{
+.box2 {
   position: relative;
   isolation: isolate;
   height: 35vh;
@@ -199,34 +454,34 @@ main {
   border-radius: 300px;
 }
 
-.text{
+.text {
   font-size: 4em;
   color: white;
 }
 
-.text2{
+.text2 {
   font-size: 2.5em;
   color: white;
 }
 
-.box3{
+.box3 {
   height: 15vh;
   width: 75vw;
   border-radius: 300px;
   display: flex;
   justify-content: center;
-  align-items: center;    
+  align-items: center;
 }
 
-.pai{
+.pai {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 6vh;
-  padding-inline: 60px; /* empurra as bordas pra dentro */
+  padding-inline: 60px;
 }
 
-.box4{
+.box4, .box5, .box6 {
   background-color: transparent;
   height: 8vh;
   width: 22vw;
@@ -239,30 +494,8 @@ main {
   transition: transform 0.3s ease-in-out;
 }
 
-.box5{
-  background-color: transparent;
-  height: 8vh;
-  width: 22vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 300px;
-  position: relative;
-  isolation: isolate;
-  transition: transform 0.3s ease-in-out;
-}
-
-.box6{
-  background-color: transparent;
-  height: 8vh;
-  width: 22vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 300px;
-  position: relative;
-  isolation: isolate;
-  transition: transform 0.3s ease-in-out;
+.box4:hover, .box5:hover, .box6:hover {
+  transform: scale(1.1);
 }
 
 .box::before {
@@ -293,10 +526,6 @@ main {
   border-radius: 300px;
   filter: url(#textura-box);
   z-index: -1;
-}
-
-.box4:hover, .box5:hover, .box6:hover{
-  transform: scale(1.1);
 }
 
 .texto-footer {
@@ -372,4 +601,35 @@ main {
   z-index: var(--z-topo);
   left: 0;
   top: 0;
+}
+
+body.cursor-padrao {
+  cursor: auto !important;
+}
+
+body.cursor-padrao * {
+  cursor: auto !important;
+}
+
+body.cursor-padrao #cursor-personalizado {
+  display: none;
+}
+
+/* ─── VLibras ────────────────────────────────────────────────────── */
+[vw-access-button] {
+  width: 140px !important;
+  height: 140px !important;
+  border-radius: 20px;
+  cursor: none !important;
+}
+
+[vw] * {
+  cursor: none !important;
+}
+
+[vw] {
+  position: fixed !important;
+  top: 8px;
+  right: 80px;
+  z-index: var(--z-topo);
 }
