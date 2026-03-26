@@ -105,6 +105,8 @@ document.addEventListener("DOMContentLoaded", function () {
   navList.addEventListener("mouseenter", function () {
     clearTimeout(timeoutSumir);
   });
+ 
+  document.querySelector(".nav-list").addEventListener("mouseleave", esconderPassarinho);
 
   // Leitura ao passar o mouse (menu)
   document.querySelectorAll(".narra-texto").forEach(function (el) {
