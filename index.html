@@ -187,7 +187,7 @@
             </div>
         </div>
 
-        <h1 class="titulo-videos">
+        <h1 class="titulo-videos leitura">
             APRENDA UM POUCO SOBRE ACESSIBILIDADE
         </h1>
 
@@ -222,6 +222,53 @@
         <div class="legenda-box" role="status">
             <span class="icone-audio" aria-hidden="true">🔊</span>
             <span id="texto-legenda"></span>
+        </div>
+    </div>
+
+    <!-- Popup de boas-vindas -->
+    <div class="popup-overlay" id="popupOverlay" aria-modal="true" role="dialog" aria-label="Boas-vindas ao LudoGames">
+        <div class="popup">
+
+            <div class="popup-topo">
+                <span class="popup-icone" aria-hidden="true">🎮</span>
+                <h2 class="popup-titulo">Bem-vindo ao LudoGames!</h2>
+                <p class="popup-subtitulo">Este site tem ferramentas especiais para ajudar todo mundo a jogar e aprender.</p>
+            </div>
+
+            <div class="popup-cards">
+                <div class="popup-card">
+                    <p class="popup-card-titulo">Narração por Voz</p>
+                    <p class="popup-card-desc">O site lê os textos em voz alta pra você!</p>
+                </div>
+                <div class="popup-card">
+                    <p class="popup-card-titulo">Legendas</p>
+                    <p class="popup-card-desc">Aparece o texto na tela enquanto fala.</p>
+                </div>
+                <div class="popup-card">
+                    <p class="popup-card-titulo">Libras</p>
+                    <p class="popup-card-desc">Tradutor de Libras no canto da tela.</p>
+                </div>
+                <div class="popup-card">
+                    <p class="popup-card-titulo">Configurações</p>
+                    <p class="popup-card-desc">Ajuste cores, fonte e animações.</p>
+                </div>
+            </div>
+
+            <p class="popup-onde">Encontre todas as opções clicando na <span>engrenagem ⚙️</span> no canto do menu.</p>
+
+            <div class="popup-toggle-row">
+                <span class="popup-toggle-label"><span aria-hidden="true">🔊</span> Ativar narração por voz</span>
+                <label class="toggle">
+                    <input type="checkbox" id="togVozPopup" checked>
+                    <span class="slider-tog"></span>
+                </label>
+            </div>
+
+            <div class="popup-rodape">
+                <button class="popup-btn-pular" id="popupPular">Pular</button>
+                <button class="popup-btn-entrar" id="popupEntrar">Vamos jogar!</button>
+            </div>
+
         </div>
     </div>
 

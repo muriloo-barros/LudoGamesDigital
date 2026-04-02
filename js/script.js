@@ -261,4 +261,47 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.classList.toggle("cursor-padrao", !this.checked);
   });
 
+  // ══════════════════════════════════════════════════════════════
+  // ─── POPUP DE BOAS-VINDAS ─────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════
+
+  const popupOverlay = document.getElementById("popupOverlay");
+  const popupEntrar  = document.getElementById("popupEntrar");
+  const popupPular   = document.getElementById("popupPular");
+  const togVozPopup  = document.getElementById("togVozPopup");
+
+  function fecharPopup() {
+    popupOverlay.classList.add("escondendo");
+    setTimeout(function () {
+      popupOverlay.classList.add("oculto");
+    }, 300);
+    localStorage.setItem("ludogames_popup_visto", "true");
+
+    // Aplica a configuração de voz escolhida no popup ao painel
+    config.voz = togVozPopup.checked;
+    const togVozPainel = document.getElementById("togVoz");
+    if (togVozPainel) {
+      togVozPainel.checked = togVozPopup.checked;
+      const rowVel = document.getElementById("rowVelocidade");
+      if (rowVel) {
+        rowVel.style.opacity = togVozPopup.checked ? "1" : "0.4";
+        rowVel.style.pointerEvents = togVozPopup.checked ? "all" : "none";
+      }
+    }
+  }
+
+  // Só mostra se for a primeira visita
+  if (localStorage.getItem("ludogames_popup_visto")) {
+    popupOverlay.classList.add("oculto");
+  }
+
+  popupEntrar.addEventListener("click", fecharPopup);
+  popupPular.addEventListener("click", fecharPopup);
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !popupOverlay.classList.contains("oculto")) {
+      fecharPopup();
+    }
+  });
+
 });
