@@ -656,8 +656,8 @@ main {
 
 .minhoca{
   position: absolute;
-  right: 9%;
-  top: 72%;
+  right: 5%;
+  top: 75%;
   z-index: var(--z-fundo);
   width: 500px;
   height: 442px;
@@ -665,7 +665,7 @@ main {
 
 .minhoca-rotate{
   position: absolute;
-  left: 6%;
+  left: 10%;
   top: 78%;
   z-index: var(--z-fundo);
   width: 625px;
