@@ -11,6 +11,280 @@ document.addEventListener("DOMContentLoaded", function () {
   const legendaBox   = document.querySelector(".legenda-box");
   const textoLegenda = document.getElementById("texto-legenda");
 
+  const config = {
+    voz:     true,
+    legenda: true,
+    vel:     1,
+  };
+
+  // ─── Função Fila / Ler Texto ─────────────────────────────────────────
+
+  let fila = [];
+  let falando = false;
+
+  function processarFila() {
+    if (falando || fila.length === 0) return;
+
+    falando = true;
+    const { texto } = fila.shift();
+
+    const mensagem = new SpeechSynthesisUtterance(texto);
+    mensagem.lang = "pt-BR";
+    mensagem.rate = config.vel;
+
+    if (config.legenda && legendaBox && textoLegenda) {
+      textoLegenda.innerText = texto;
+      legendaBox.classList.add("ativa");
+    }
+
+    mensagem.onend = function () {
+      if (legendaBox) legendaBox.classList.remove("ativa");
+      falando = false;
+      processarFila();
+    };
+
+    mensagem.onerror = function () {
+      if (legendaBox) legendaBox.classList.remove("ativa");
+      falando = false;
+      processarFila();
+    };
+
+    window.speechSynthesis.speak(mensagem);
+  }
+
+  function falarTexto(e) {
+    if (!vozSuportada || !config.voz) return;
+
+    const texto = e.currentTarget.innerText.trim();
+    if (!texto) return;
+
+    fila.push({ texto });
+    processarFila();
+  }
+
+  // ─── Focus Trap ───────────────────────────────────────────────
+  function criarFocusTrap(container) {
+    const seletorFocaveis = [
+      'a[href]', 'button:not([disabled])',
+      'input:not([disabled])', 'select:not([disabled])',
+      'textarea:not([disabled])', '[tabindex]:not([tabindex="-1"])'
+    ].join(',');
+
+    function handleTab(e) {
+      if (e.key !== 'Tab') return;
+
+      const focaveis = [...container.querySelectorAll(seletorFocaveis)]
+        .filter(el => el.offsetParent !== null);
+
+      if (focaveis.length === 0) return;
+
+      const primeiro = focaveis[0];
+      const ultimo   = focaveis[focaveis.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === primeiro) {
+          e.preventDefault();
+          ultimo.focus();
+        }
+      } else {
+        if (document.activeElement === ultimo) {
+          e.preventDefault();
+          primeiro.focus();
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleTab);
+    return function removerTrap() {
+      document.removeEventListener('keydown', handleTab);
+    };
+  }
+
+  // ─── Passarinho do header ──────────────────────────────────────
+  const passarinho = document.getElementById("passarinho");
+  const linksNav   = document.querySelectorAll(".nav-list a");
+  const navList    = document.querySelector(".nav-list");
+  let timeoutSumir = null;
+ 
+  function moverPassarinho(link) {
+    if (document.body.classList.contains("sem-animacoes")) return;
+    const rect    = link.getBoundingClientRect();
+    const navRect = document.querySelector(".nav").getBoundingClientRect();
+    const esquerda = rect.left - navRect.left + rect.width / 2 - 30;
+ 
+    clearTimeout(timeoutSumir);
+ 
+    if (passarinho.classList.contains("visivel")) {
+      passarinho.classList.add("pousando");
+      setTimeout(() => passarinho.classList.remove("pousando"), 300);
+    }
+ 
+    passarinho.style.left = esquerda + "px";
+    passarinho.classList.add("visivel");
+  }
+ 
+  function esconderPassarinho() {
+    timeoutSumir = setTimeout(() => {
+      passarinho.classList.remove("visivel");
+    }, 400);
+  }
+ 
+  linksNav.forEach(function (link) {
+    link.addEventListener("mouseenter", function () {
+      clearTimeout(timeoutSumir);
+      moverPassarinho(this);
+    });
+  });
+ 
+  navList.addEventListener("mouseleave", esconderPassarinho);
+  navList.addEventListener("mouseenter", function () {
+    clearTimeout(timeoutSumir);
+  });
+ 
+  document.querySelector(".nav-list").addEventListener("mouseleave", esconderPassarinho);
+
+  document.querySelectorAll(".narra-texto").forEach(function (el) {
+    el.addEventListener("mouseenter", falarTexto);
+  });
+
+  document.querySelectorAll(".leitura").forEach(function (el) {
+    el.addEventListener("click", falarTexto);
+  });
+
+  // ─── Cursor personalizado ──────────────────────────────────────
+  const cursor = document.getElementById("cursor-personalizado");
+
+  if (cursor) {
+    document.addEventListener("mousemove", function (e) {
+      cursor.style.left = (e.clientX - 40) + "px";
+      cursor.style.top  = (e.clientY - 40) + "px";
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // ─── PAINEL DE ACESSIBILIDADE ─────────────────────────────────
+  // ══════════════════════════════════════════════════════════════
+
+  const btnAbrir  = document.getElementById("btnAcessibilidade");
+  const btnFechar = document.getElementById("btnFechar");
+  const sidebar   = document.getElementById("sidebarAcessibilidade");
+  const overlay   = document.getElementById("sbOverlay");
+
+  let removerTrapSidebar = null;
+
+  // Ativa ou desativa a tabulação de todos os elementos focáveis dentro da sidebar
+  function toggleFocusSidebar(habilitar) {
+    const seletorFocaveis = 'a[href], button, input, select, textarea, [tabindex]';
+    sidebar.querySelectorAll(seletorFocaveis).forEach(function (el) {
+      if (habilitar) {
+        const original = el.dataset.tabindexOriginal;
+        el.removeAttribute('tabindex');
+        if (original !== undefined && original !== '') {
+          el.setAttribute('tabindex', original);
+        }
+      } else {
+        el.dataset.tabindexOriginal = el.getAttribute('tabindex') || '';
+        el.setAttribute('tabindex', '-1');
+      }
+    });
+  }
+
+  // Sidebar começa fechada — desabilitar foco imediatamente
+  toggleFocusSidebar(false);
+
+  function abrirSidebar() {
+    sidebar.classList.add("aberta");
+    sidebar.setAttribute("aria-hidden", "false");
+    overlay.classList.add("ativo");
+    document.body.style.overflow = "hidden";
+    toggleFocusSidebar(true);
+    btnFechar.focus();
+    removerTrapSidebar = criarFocusTrap(sidebar);
+  }
+
+  function fecharSidebar() {
+    sidebar.classList.remove("aberta");
+    sidebar.setAttribute("aria-hidden", "true");
+    overlay.classList.remove("ativo");
+    document.body.style.overflow = "";
+    toggleFocusSidebar(false);
+    btnAbrir.focus();
+    if (removerTrapSidebar) {
+      removerTrapSidebar();
+      removerTrapSidebar = null;
+    }
+  }
+
+  btnAbrir.addEventListener("click", abrirSidebar);
+  btnFechar.addEventListener("click", fecharSidebar);
+  overlay.addEventListener("click", fecharSidebar);
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && sidebar.classList.contains("aberta")) {
+      fecharSidebar();
+    }
+  });
+
+  document.getElementById("togVoz").addEventListener("change", function () {
+    config.voz = this.checked;
+    if (!this.checked) {
+      window.speechSynthesis.cancel();
+      fila = [];
+      falando = false;
+      if (legendaBox) legendaBox.classList.remove("ativa");
+    }
+    document.getElementById("rowVelocidade").style.opacity = this.checked ? "1" : "0.4";
+    document.getElementById("rowVelocidade").style.pointerEvents = this.checked ? "all" : "none";
+  });
+
+  document.getElementById("togLegenda").addEventListener("change", function () {
+    config.legenda = this.checked;
+    if (!this.checked && legendaBox) legendaBox.classList.remove("ativa");
+  });
+
+  document.querySelectorAll("[data-vel]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll("[data-vel]").forEach(b => b.classList.remove("ativo"));
+      this.classList.add("ativo");
+      config.vel = parseFloat(this.dataset.vel);
+    });
+  });
+
+  document.getElementById("togAnim").addEventListener("change", function () {
+    document.body.classList.toggle("sem-animacoes", !this.checked);
+    if (!this.checked) passarinho.classList.remove("visivel");
+  });
+
+  document.getElementById("togContraste").addEventListener("change", function () {
+    document.body.classList.toggle("alto-contraste", this.checked);
+  });
+
+  document.querySelectorAll("[data-fonte]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll("[data-fonte]").forEach(b => b.classList.remove("ativo"));
+      this.classList.add("ativo");
+      document.body.classList.remove("fonte-pequena", "fonte-normal", "fonte-grande");
+      document.body.classList.add("fonte-" + this.dataset.fonte);
+    });
+  });
+
+  document.getElementById("togCursor").addEventListener("change", function () {
+    document.body.classList.toggle("cursor-padrao", !this.checked);
+  });
+
+});
+
+  // ─── VLibras ──────────────────────────────────────────────────
+  if (window.VLibras) {
+    new window.VLibras.Widget("https://vlibras.gov.br/app");
+  }
+
+  // ─── Narração por voz ─────────────────────────────────────────
+  const vozSuportada = "speechSynthesis" in window;
+
+  const legendaBox   = document.querySelector(".legenda-box");
+  const textoLegenda = document.getElementById("texto-legenda");
+
   // Estado das configurações de acessibilidade
   const config = {
     voz:     true,
@@ -215,5 +489,3 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("togCursor").addEventListener("change", function () {
     document.body.classList.toggle("cursor-padrao", !this.checked);
   });
-
-});

@@ -14,6 +14,9 @@
     
 <body>
 
+    <!-- Skip link — primeiro elemento focável, pula o menu -->
+    <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
+
     <!-- Filtro SVG para textura nas boxes -->
     <svg width="0" height="0" style="position:absolute">
     <defs>
@@ -169,7 +172,7 @@
         <img src="imgs/nuvem.png" alt="" class="nuvem5">
     </div>
 
-    <div class="main-card">
+    <div class="main-card" id="conteudo-principal" tabindex="-1">
         <div class="titulo-card">O que é o LudoJogos?</div>
         <div class="texto-card">
             <p>LudoGames é um projeto inovador de trabalho de conclusão de curso focado em promover a acessibilidade em jogos educacionais para crianças de 6 a 8 anos. Nosso objetivo é criar uma plataforma inclusiva e divertida, que proporcione aprendizado de qualidade, independentemente das necessidades individuais dos pequenos jogadores.</p>

@@ -63,6 +63,388 @@ document.addEventListener("DOMContentLoaded", function () {
     processarFila();
   }
 
+  // ─── Focus Trap ───────────────────────────────────────────────
+  // Prende a navegação por TAB dentro de um elemento (modal/sidebar)
+  function criarFocusTrap(container) {
+    const seletorFocaveis = [
+      'a[href]', 'button:not([disabled])',
+      'input:not([disabled])', 'select:not([disabled])',
+      'textarea:not([disabled])', '[tabindex]:not([tabindex="-1"])'
+    ].join(',');
+
+    function handleTab(e) {
+      if (e.key !== 'Tab') return;
+
+      const focaveis = [...container.querySelectorAll(seletorFocaveis)]
+        .filter(el => el.offsetParent !== null);
+
+      if (focaveis.length === 0) return;
+
+      const primeiro = focaveis[0];
+      const ultimo   = focaveis[focaveis.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === primeiro) {
+          e.preventDefault();
+          ultimo.focus();
+        }
+      } else {
+        if (document.activeElement === ultimo) {
+          e.preventDefault();
+          primeiro.focus();
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleTab);
+    return function removerTrap() {
+      document.removeEventListener('keydown', handleTab);
+    };
+  }
+
+  // ─── Passarinho do header ──────────────────────────────────────
+  const passarinho = document.getElementById("passarinho");
+  const linksNav   = document.querySelectorAll(".nav-list a");
+  const navList    = document.querySelector(".nav-list");
+  let timeoutSumir = null;
+ 
+  function moverPassarinho(link) {
+    if (document.body.classList.contains("sem-animacoes")) return;
+    const rect    = link.getBoundingClientRect();
+    const navRect = document.querySelector(".nav").getBoundingClientRect();
+    const esquerda = rect.left - navRect.left + rect.width / 2 - 30;
+ 
+    clearTimeout(timeoutSumir);
+ 
+    if (passarinho.classList.contains("visivel")) {
+      passarinho.classList.add("pousando");
+      setTimeout(() => passarinho.classList.remove("pousando"), 300);
+    }
+ 
+    passarinho.style.left = esquerda + "px";
+    passarinho.classList.add("visivel");
+  }
+ 
+  function esconderPassarinho() {
+    timeoutSumir = setTimeout(() => {
+      passarinho.classList.remove("visivel");
+    }, 400);
+  }
+ 
+  linksNav.forEach(function (link) {
+    link.addEventListener("mouseenter", function () {
+      clearTimeout(timeoutSumir);
+      moverPassarinho(this);
+    });
+  });
+ 
+  navList.addEventListener("mouseleave", esconderPassarinho);
+  navList.addEventListener("mouseenter", function () {
+    clearTimeout(timeoutSumir);
+  });
+ 
+  document.querySelector(".nav-list").addEventListener("mouseleave", esconderPassarinho);
+
+  document.querySelectorAll(".narra-texto").forEach(function (el) {
+    el.addEventListener("mouseenter", falarTexto);
+  });
+
+  document.querySelectorAll(".leitura").forEach(function (el) {
+    el.addEventListener("click", falarTexto);
+  });
+
+  // ─── Cursor personalizado ──────────────────────────────────────
+  const cursor = document.getElementById("cursor-personalizado");
+
+  if (cursor) {
+    document.addEventListener("mousemove", function (e) {
+      cursor.style.left = (e.clientX - 40) + "px";
+      cursor.style.top  = (e.clientY - 40) + "px";
+    });
+  }
+
+  // ─── Gradiente do header conforme scroll ───────────────────────
+  const layers = [
+    { el: document.getElementById("azul"),   threshold: 0    },
+    { el: document.getElementById("verde"),  threshold: 750  },
+    { el: document.getElementById("marrom"), threshold: 1850 },   
+  ];
+
+  function recalcularThresholds() {
+    const alturaDoc = document.documentElement.scrollHeight;
+    if (alturaDoc > 1000) {
+      layers[1].threshold = alturaDoc * 0.20;
+      layers[2].threshold = alturaDoc * 0.50;
+    }
+  }
+
+  recalcularThresholds();
+  window.addEventListener("resize", recalcularThresholds);
+
+  let rafAgendado = false;
+
+  function atualizarGradiente() {
+    const y = window.scrollY;
+    let ativa = 0;
+
+    layers.forEach(function (layer, i) {
+      if (y >= layer.threshold) ativa = i;
+    });
+
+    layers.forEach(function (layer, i) {
+      layer.el.style.opacity = i === ativa ? "1" : "0";
+    });
+
+    rafAgendado = false;
+  }
+
+  window.addEventListener("scroll", function () {
+    if (!rafAgendado) {
+      rafAgendado = true;
+      requestAnimationFrame(atualizarGradiente);
+    }
+  }, { passive: true });
+
+
+  // ══════════════════════════════════════════════════════════════
+  // ─── PAINEL DE ACESSIBILIDADE ─────────────────────────────────
+  // ══════════════════════════════════════════════════════════════
+
+  const btnAbrir  = document.getElementById("btnAcessibilidade");
+  const btnFechar = document.getElementById("btnFechar");
+  const sidebar   = document.getElementById("sidebarAcessibilidade");
+  const overlay   = document.getElementById("sbOverlay");
+
+  let removerTrapSidebar = null;
+
+  // Ativa ou desativa a tabulação de todos os elementos focáveis dentro da sidebar
+  function toggleFocusSidebar(habilitar) {
+    const seletorFocaveis = 'a[href], button, input, select, textarea, [tabindex]';
+    sidebar.querySelectorAll(seletorFocaveis).forEach(function (el) {
+      if (habilitar) {
+        const original = el.dataset.tabindexOriginal;
+        el.removeAttribute('tabindex');
+        if (original !== undefined && original !== '') {
+          el.setAttribute('tabindex', original);
+        }
+      } else {
+        // Guarda o tabindex original antes de desabilitar
+        el.dataset.tabindexOriginal = el.getAttribute('tabindex') || '';
+        el.setAttribute('tabindex', '-1');
+      }
+    });
+  }
+
+  // Sidebar começa fechada — desabilitar foco imediatamente
+  toggleFocusSidebar(false);
+
+  function abrirSidebar() {
+    sidebar.classList.add("aberta");
+    sidebar.setAttribute("aria-hidden", "false");
+    overlay.classList.add("ativo");
+    document.body.style.overflow = "hidden";
+    toggleFocusSidebar(true);
+    btnFechar.focus();
+    removerTrapSidebar = criarFocusTrap(sidebar);
+  }
+
+  function fecharSidebar() {
+    sidebar.classList.remove("aberta");
+    sidebar.setAttribute("aria-hidden", "true");
+    overlay.classList.remove("ativo");
+    document.body.style.overflow = "";
+    toggleFocusSidebar(false);
+    btnAbrir.focus();
+    if (removerTrapSidebar) {
+      removerTrapSidebar();
+      removerTrapSidebar = null;
+    }
+  }
+
+  btnAbrir.addEventListener("click", abrirSidebar);
+  btnFechar.addEventListener("click", fecharSidebar);
+  overlay.addEventListener("click", fecharSidebar);
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && sidebar.classList.contains("aberta")) {
+      fecharSidebar();
+    }
+  });
+
+  // ─── Toggle: Narração por voz ──────────────────────────────────
+  document.getElementById("togVoz").addEventListener("change", function () {
+    config.voz = this.checked;
+    if (!this.checked) {
+      window.speechSynthesis.cancel();
+      fila = [];
+      falando = false;
+      if (legendaBox) legendaBox.classList.remove("ativa");
+    }
+    document.getElementById("rowVelocidade").style.opacity = this.checked ? "1" : "0.4";
+    document.getElementById("rowVelocidade").style.pointerEvents = this.checked ? "all" : "none";
+  });
+
+  // ─── Toggle: Legendas ─────────────────────────────────────────
+  document.getElementById("togLegenda").addEventListener("change", function () {
+    config.legenda = this.checked;
+    if (!this.checked && legendaBox) legendaBox.classList.remove("ativa");
+  });
+
+  // ─── Botões: Velocidade da narração ───────────────────────────
+  document.querySelectorAll("[data-vel]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll("[data-vel]").forEach(b => b.classList.remove("ativo"));
+      this.classList.add("ativo");
+      config.vel = parseFloat(this.dataset.vel);
+    });
+  });
+
+  // ─── Toggle: Animações ────────────────────────────────────────
+  document.getElementById("togAnim").addEventListener("change", function () {
+    document.body.classList.toggle("sem-animacoes", !this.checked);
+    if (!this.checked) passarinho.classList.remove("visivel");
+  });
+
+  // ─── Toggle: Alto contraste ───────────────────────────────────
+  document.getElementById("togContraste").addEventListener("change", function () {
+    document.body.classList.toggle("alto-contraste", this.checked);
+  });
+
+  // ─── Botões: Tamanho da fonte ─────────────────────────────────
+  document.querySelectorAll("[data-fonte]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll("[data-fonte]").forEach(b => b.classList.remove("ativo"));
+      this.classList.add("ativo");
+      document.body.classList.remove("fonte-pequena", "fonte-normal", "fonte-grande");
+      document.body.classList.add("fonte-" + this.dataset.fonte);
+    });
+  });
+
+  // ─── Toggle: Cursor personalizado ─────────────────────────────
+  document.getElementById("togCursor").addEventListener("change", function () {
+    document.body.classList.toggle("cursor-padrao", !this.checked);
+  });
+
+  // ══════════════════════════════════════════════════════════════
+  // ─── POPUP DE BOAS-VINDAS ─────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════
+
+  const popupOverlay = document.getElementById("popupOverlay");
+  const popupEntrar  = document.getElementById("popupEntrar");
+  const popupPular   = document.getElementById("popupPular");
+  const togVozPopup  = document.getElementById("togVozPopup");
+
+  let removerTrapPopup = null;
+
+  function fecharPopup() {
+    popupOverlay.classList.add("escondendo");
+    setTimeout(function () {
+      popupOverlay.classList.add("oculto");
+    }, 300);
+    document.body.style.overflow = "";
+    localStorage.setItem("ludogames_popup_visto", "true");
+
+    if (removerTrapPopup) {
+      removerTrapPopup();
+      removerTrapPopup = null;
+    }
+
+    config.voz = togVozPopup.checked;
+    const togVozPainel = document.getElementById("togVoz");
+    if (togVozPainel) {
+      togVozPainel.checked = togVozPopup.checked;
+      const rowVel = document.getElementById("rowVelocidade");
+      if (rowVel) {
+        rowVel.style.opacity = togVozPopup.checked ? "1" : "0.4";
+        rowVel.style.pointerEvents = togVozPopup.checked ? "all" : "none";
+      }
+    }
+  }
+
+  if (localStorage.getItem("ludogames_popup_visto")) {
+    popupOverlay.classList.add("oculto");
+  } else {
+    // Popup visível: bloqueia scroll e ativa focus trap
+    document.body.style.overflow = "hidden";
+    removerTrapPopup = criarFocusTrap(popupOverlay);
+    // Foca o botão principal ao carregar
+    setTimeout(function () { popupEntrar.focus(); }, 100);
+  }
+
+  popupEntrar.addEventListener("click", fecharPopup);
+  popupPular.addEventListener("click", fecharPopup);
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !popupOverlay.classList.contains("oculto")) {
+      fecharPopup();
+    }
+  });
+
+});
+
+  // ─── VLibras ──────────────────────────────────────────────────
+  if (window.VLibras) {
+    new window.VLibras.Widget("https://vlibras.gov.br/app");
+  }
+
+  // ─── Narração por voz ─────────────────────────────────────────
+  const vozSuportada = "speechSynthesis" in window;
+
+  const legendaBox   = document.querySelector(".legenda-box");
+  const textoLegenda = document.getElementById("texto-legenda");
+
+  // Estado das configurações de acessibilidade
+  const config = {
+    voz:     true,
+    legenda: true,
+    vel:     1,
+  };
+
+  // ─── Função Fila / Ler Texto ─────────────────────────────────────────
+
+  let fila = [];
+  let falando = false;
+
+  function processarFila() {
+    if (falando || fila.length === 0) return;
+
+    falando = true;
+    const { texto } = fila.shift();
+
+    const mensagem = new SpeechSynthesisUtterance(texto);
+    mensagem.lang = "pt-BR";
+    mensagem.rate = config.vel;
+
+    if (config.legenda && legendaBox && textoLegenda) {
+      textoLegenda.innerText = texto;
+      legendaBox.classList.add("ativa");
+    }
+
+    mensagem.onend = function () {
+      if (legendaBox) legendaBox.classList.remove("ativa");
+      falando = false;
+      processarFila();
+    };
+
+    mensagem.onerror = function () {
+      if (legendaBox) legendaBox.classList.remove("ativa");
+      falando = false;
+      processarFila();
+    };
+
+    window.speechSynthesis.speak(mensagem);
+  }
+
+  function falarTexto(e) {
+    if (!vozSuportada || !config.voz) return;
+
+    const texto = e.currentTarget.innerText.trim();
+    if (!texto) return;
+
+    fila.push({ texto });
+    processarFila();
+  }
+
   // ─── Passarinho do header ──────────────────────────────────────
   const passarinho = document.getElementById("passarinho");
   const linksNav   = document.querySelectorAll(".nav-list a");
@@ -303,5 +685,3 @@ document.addEventListener("DOMContentLoaded", function () {
       fecharPopup();
     }
   });
-
-});
