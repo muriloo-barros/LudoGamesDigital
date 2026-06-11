@@ -107,7 +107,7 @@ body {
   background-color: #6DE4F9;
   font-family: "Margarine", sans-serif;
   overflow-x: hidden;
-   min-height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
