@@ -130,7 +130,7 @@ body {
   z-index: var(--z-fundo);
 }
 
-#azul   { background-image: linear-gradient(to bottom, #0852ff,    rgba(0,179,255,0));   opacity: 1; }
+#azul   { background-image: linear-gradient(to bottom, #0852ff,    rgba(0,179,255,0));   opacity: 0; }
 
 .nav {
   margin-inline: auto;
