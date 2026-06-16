@@ -147,10 +147,28 @@
             </div>
         </section>
 
+    </aside>
+
+        <!-- Legenda de acessibilidade -->
+    <div id="legenda-container" aria-live="polite" aria-atomic="true">
+        <div class="legenda-box" role="status">
+            <span class="icone-audio" aria-hidden="true">🔊</span>
+            <span id="texto-legenda"></span>
+        </div>
+    </div>
+
+    <!-- VLibras -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper class="wrapper">
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+
     <!-- Cursor personalizado -->
     <div id="cursor-personalizado" aria-hidden="true"></div>
 
     <script src="js/jogos.js" defer></script>
 
-    </aside>
 </body>
+</html>
