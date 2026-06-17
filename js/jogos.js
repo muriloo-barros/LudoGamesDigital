@@ -173,6 +173,64 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }, { passive: true });
 
+  // ─── Carrossel ──────────────────────────────────────
+
+  // Troque por seus próprios itens (imagem + título)
+  const ITEMS = [
+    { id: 1, title: "Floresta ao amanhecer", image: "https://picsum.photos/seed/forest1/480/600" },
+    { id: 2, title: "Dunas do deserto", image: "https://picsum.photos/seed/desert2/480/600" },
+    { id: 3, title: "Costa rochosa", image: "https://picsum.photos/seed/coast3/480/600" },
+    { id: 4, title: "Montanhas nevadas", image: "https://picsum.photos/seed/mountain4/480/600" },
+    { id: 5, title: "Vale verdejante", image: "https://picsum.photos/seed/valley5/480/600" },
+    { id: 6, title: "Lago espelhado", image: "https://picsum.photos/seed/lake6/480/600" },
+    { id: 7, title: "Cidade à noite", image: "https://picsum.photos/seed/city7/480/600" },
+  ];
+ 
+  const track = document.getElementById("carouselTrack");
+  const btnPrev = document.getElementById("btnPrev");
+  const btnNext = document.getElementById("btnNext");
+ 
+  // Monta os cards dinamicamente a partir de ITEMS
+  function renderCards(items) {
+    track.innerHTML = "";
+    items.forEach((item) => {
+      const card = document.createElement("div");
+      card.className = "carousel-card";
+      card.innerHTML = `
+        <img src="${item.image}" alt="${item.title}" draggable="false" />
+        <div class="overlay"></div>
+        <div class="card-title">${item.title}</div>
+      `;
+      track.appendChild(card);
+    });
+  }
+ 
+  function cardScrollDistance() {
+    const card = track.querySelector(".carousel-card");
+    const gap = 12;
+    return card ? card.offsetWidth + gap : 160;
+  }
+ 
+  function updateButtons() {
+    const maxScroll = track.scrollWidth - track.clientWidth;
+    btnPrev.disabled = track.scrollLeft <= 4;
+    btnNext.disabled = track.scrollLeft >= maxScroll - 4;
+  }
+ 
+  btnPrev.addEventListener("click", () => {
+    track.scrollBy({ left: -cardScrollDistance(), behavior: "smooth" });
+  });
+ 
+  btnNext.addEventListener("click", () => {
+    track.scrollBy({ left: cardScrollDistance(), behavior: "smooth" });
+  });
+ 
+  track.addEventListener("scroll", updateButtons, { passive: true });
+  window.addEventListener("resize", updateButtons);
+ 
+  renderCards(ITEMS);
+  updateButtons();
+
 
   // ══════════════════════════════════════════════════════════════
   // ─── PAINEL DE ACESSIBILIDADE ─────────────────────────────────

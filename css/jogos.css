@@ -4,6 +4,9 @@
     --z-header:   100;
     --z-overlay:  1000;
     --z-topo:     9999;
+    --bg: #ffffff00;
+    --card-radius: 20px;
+    --text-light: #ffffff;
 }
 
 /* ─── Reset ─────────────────────────────────────────────────────── */
@@ -440,6 +443,110 @@ body {
   background: #FEE764;
   color: #3d1f0a;
 }
+
+/* ─── Carrossel ──────────────────────────────────────────────────── */
+
+.carousel-wrapper {
+    width: 100%;
+    margin: 0 auto;
+    background: var(--bg);
+    padding: 24px 16px;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+ 
+  .carousel-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+ 
+  .carousel-btn {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.06);
+    background: #fff;
+    color: #404040;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: background 0.15s ease, opacity 0.15s ease;
+  }
+ 
+  .carousel-btn:hover:not(:disabled) {
+    background: #f0f0f0;
+  }
+ 
+  .carousel-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+ 
+  .carousel-track {
+    flex: 1;
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding-bottom: 8px;
+    min-width: 0;
+  }
+ 
+  .carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+ 
+  .carousel-card {
+    position: relative;
+    flex-shrink: 0;
+    width: 450px;
+    height: 450px;
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    scroll-snap-align: start;
+  }
+ 
+  .carousel-card img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+ 
+  .carousel-card .overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.1) 55%, transparent 100%);
+  }
+ 
+  .carousel-card .card-title {
+    position: absolute;
+    left:  0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+    padding: 12px;
+    color: var(--text-light);
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 2;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+ 
+  @media (max-width: 480px) {
+    .carousel-card {
+      width: 130px;
+      height: 180px;
+    }
+  }
 
 /* ─── Cursor personalizado ───────────────────────────────────────── */
 #cursor-personalizado {
