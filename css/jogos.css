@@ -21,8 +21,14 @@
 /* cursor:none só no body — herdado por todos os filhos.
    Não aplicar no * para não poluir especificidade. */
 body {
+    font-family: "Margarine", sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     cursor: none;
-    background-image: url('/imgs/cenárioágua.png');
+    z-index: var(--z-fundo);
+    background-image: url('../imgs/cenárioágua.png');
     background-repeat: no-repeat;
     background-size: cover; /* Preenche a tela mantendo proporção */
     background-position: center; /* Centraliza a imagem */
@@ -109,16 +115,6 @@ body.cursor-padrao * {
 
 body.cursor-padrao #cursor-personalizado {
   display: none;
-}
-
-/* ─── Body ───────────────────────────────────────────────────────── */
-body {
-  background-color: #6DE4F9;
-  font-family: "Margarine", sans-serif;
-  overflow-x: hidden;
-   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
 /* ─── Header ─────────────────────────────────────────────────────── */
