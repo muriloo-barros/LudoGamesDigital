@@ -481,11 +481,11 @@ body {
 
 .infoneto {
   position: absolute;
-  width: 300px;
-  height: 300px;
+  width: 350px;
+  height: 350px;
   right: 10%;
-  left: 82%;
-  top: 27%;
+  left: 81%;
+  top: 24%;
   z-index: var(--z-conteudo);
 }
 

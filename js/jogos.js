@@ -177,13 +177,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Troque por seus próprios itens (imagem + título)
   const ITEMS = [
-    { id: 1, title: "Floresta ao amanhecer", image: "https://picsum.photos/seed/forest1/480/600" },
-    { id: 2, title: "Dunas do deserto", image: "https://picsum.photos/seed/desert2/480/600" },
-    { id: 3, title: "Costa rochosa", image: "https://picsum.photos/seed/coast3/480/600" },
-    { id: 4, title: "Montanhas nevadas", image: "https://picsum.photos/seed/mountain4/480/600" },
-    { id: 5, title: "Vale verdejante", image: "https://picsum.photos/seed/valley5/480/600" },
-    { id: 6, title: "Lago espelhado", image: "https://picsum.photos/seed/lake6/480/600" },
-    { id: 7, title: "Cidade à noite", image: "https://picsum.photos/seed/city7/480/600" },
+    { id: 1, title: "Jogos para surdos", image: "https://picsum.photos/seed/forest1/480/600" },
+    { id: 2, title: "Jogos para mudos", image: "https://picsum.photos/seed/desert2/480/600" },
+    { id: 3, title: "Jogos para cegos", image: "https://picsum.photos/seed/coast3/480/600" },
+    { id: 4, title: "Jogos para TEA nível 1", image: "https://picsum.photos/seed/mountain4/480/600" },
+    { id: 5, title: "Jogos para TEA nível 2", image: "https://picsum.photos/seed/valley5/480/600" },
+    { id: 6, title: "Jogos para TEA nível 3", image: "https://picsum.photos/seed/lake6/480/600" },
+    { id: 7, title: "Jogos para deficientes físicos", image: "https://picsum.photos/seed/city7/480/600" },
   ];
  
   const track = document.getElementById("carouselTrack");
