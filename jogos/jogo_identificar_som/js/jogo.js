@@ -19,9 +19,9 @@ const bancoDeRodadas = [
     {
         tema: "INSTRUMENTOS",
         opcoes: [
-            { nome: "Tambor", som: "https://google.com", img: "https://unsplash.com" },
-            { nome: "Piano", som: "https://google.com", img: "https://unsplash.com" },
-            { nome: "Flauta", som: "https://google.com", img: "https://unsplash.com" }
+            { nome: "Tambor", som: "sons/tambor.wav", img: "https://unsplash.com" },
+            { nome: "Piano", som: "sons/piano.wav", img: "https://unsplash.com" },
+            { nome: "Flauta", som: "sons/flauta.wav", img: "https://unsplash.com" }
         ]
     },
     {
