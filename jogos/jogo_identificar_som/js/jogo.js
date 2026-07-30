@@ -27,17 +27,17 @@ const bancoDeRodadas = [
     {
         tema: "NATUREZA",
         opcoes: [
-            { nome: "Chuva", som: "https://google.com", img: "https://unsplash.com" },
-            { nome: "Vento", som: "https://google.com", img: "https://unsplash.com" },
-            { nome: "Mar", som: "https://google.com", img: "https://unsplash.com" }
+            { nome: "Chuva", som: "chuva.wav", img: "https://unsplash.com" },
+            { nome: "Vento", som: "vento.wav", img: "https://unsplash.com" },
+            { nome: "Mar", som: "mar.wav", img: "https://unsplash.com" }
         ]
     },
     {
         tema: "COISAS DE CASA",
         opcoes: [
-            { nome: "Telefone", som: "https://google.com", img: "https://unsplash.com" },
-            { nome: "Despertador", som: "https://google.com", img: "https://unsplash.com" },
-            { nome: "Campainha", som: "https://google.com", img: "https://unsplash.com" }
+            { nome: "Telefone", som: "telefone.wav", img: "https://unsplash.com" },
+            { nome: "Despertador", som: "depertador.wav", img: "https://unsplash.com" },
+            { nome: "Campainha", som: "campainha.mp3", img: "https://unsplash.com" }
         ]
     }
 ];
