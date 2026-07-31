@@ -129,10 +129,16 @@ function iniciarRodada() {
     // Ordem da narração: 1) tema  2) opções (número + nome)  3) som a identificar.
     // Cada etapa só começa quando a anterior termina de fato (callback aoTerminar),
     // evitando que os áudios se atropelem.
-    falar(
-        `Fase ${rodadaAtual}. O tema é ${dadosRodada.tema}. Ouça o som com atenção e me diga qual é!`,
-        () => falar(montarTextoOpcoes(), tocarSomAtual)
-    );
+    const textoTema = `Fase ${rodadaAtual}. O tema é ${dadosRodada.tema}. Ouça o som com atenção e me diga qual é!`;
+
+    falar(textoTema, () => {
+        falar(montarTextoOpcoes(), () => {
+            // Fix: depois de narrar as opções, o texto na tela ficava preso
+            // na frase das opções. Agora volta a mostrar o texto do tema.
+            txtInstrucao.textContent = textoTema;
+            tocarSomAtual();
+        });
+    });
 }
 
 // Monta a frase "Aperte o número 1 para gato, 2 para cachorro e 3 para leãozinho"
@@ -159,27 +165,30 @@ function verificarEscolha(indexEscolhido) {
         // CORRETO: Vibração alegre curta e avança
         vibrarDispositivo([80, 50, 80]);
 
-        // Fix: o som de acerto tocava ao mesmo tempo que a narração da
-        // próxima fase começava, atropelando o áudio. Agora espera o som
-        // de acerto terminar antes de avançar para a próxima rodada.
+        // Fix: o somAcerto é reaproveitado em todas as rodadas. Se o
+        // setTimeout de segurança e o evento onended disparassem os dois,
+        // iniciarRodada() rodava 2x e a segunda narração atropelava a
+        // primeira. Agora um guard (jaAvancou) garante que só dispara uma vez.
         somAcerto.currentTime = 0;
         somAcerto.play().catch(() => {});
 
         rodadaAtual++;
-        somAcerto.onended = () => {
+
+        let jaAvancou = false;
+        const avancar = () => {
+            if (jaAvancou) return;
+            jaAvancou = true;
+            somAcerto.onended = null;
             if (rodadaAtual <= MAX_RODADAS) {
                 iniciarRodada();
             } else {
                 finalizarJogo();
             }
         };
+
+        somAcerto.onended = avancar;
         // Garante avanço mesmo se o evento onended não disparar (ex: erro de carregamento)
-        setTimeout(() => {
-            if (somAcerto.onended) {
-                somAcerto.onended();
-                somAcerto.onended = null;
-            }
-        }, 1500);
+        setTimeout(avancar, 1500);
     } else {
         // ERRADO: Vibração de erro (longa/dupla) e NÃO avança a fase!
         vibrarDispositivo([300, 100, 300]);
