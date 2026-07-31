@@ -759,6 +759,7 @@ body.cursor-padrao #cursor-personalizado {
   color: white;
   font-size: 20px;
   line-height: 1.4;
+  margin-bottom: 50px;
 }
 
 .escondido { display: none !important; }
