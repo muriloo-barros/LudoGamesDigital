@@ -4,40 +4,40 @@ const bancoDeRodadas = [
         tema: "ANIMAIS",
         opcoes: [
             { nome: "Gatinho", som: "sons/gato.mp3", img: "imgs/gato.png" },
-            { nome: "Cachorrinho", som: "sons/cachorro.mp3", img: "https://unsplash.com" },
-            { nome: "Leãozinho", som: "sons/leao.mp3", img: "https://unsplash.com" }
+            { nome: "Cachorrinho", som: "sons/cachorro.mp3", img: "imgs/gato.png" },
+            { nome: "Leãozinho", som: "sons/leao.mp3", img: "imgs/gato.png" }
         ]
     },
     {
         tema: "TRANSPORTES",
         opcoes: [
-            { nome: "Carro", som: "sons/carro.mp3", img: "https://unsplash.com" },
-            { nome: "Avião", som: "sons/aviao.mp3", img: "https://unsplash.com" },
-            { nome: "Trem", som: "sons/trem.mp3", img: "https://unsplash.com" }
+            { nome: "Carro", som: "sons/carro.mp3", img: "imgs/gato.png" },
+            { nome: "Avião", som: "sons/aviao.mp3", img: "imgs/gato.png" },
+            { nome: "Trem", som: "sons/trem.mp3", img: "imgs/gato.png" }
         ]
     },
     {
         tema: "INSTRUMENTOS",
         opcoes: [
-            { nome: "Tambor", som: "sons/tambor.wav", img: "https://unsplash.com" },
-            { nome: "Piano", som: "sons/piano.wav", img: "https://unsplash.com" },
-            { nome: "Flauta", som: "sons/flauta.wav", img: "https://unsplash.com" }
+            { nome: "Tambor", som: "sons/tambor.wav", img: "imgs/gato.png" },
+            { nome: "Piano", som: "sons/piano.wav", img: "imgs/gato.png" },
+            { nome: "Flauta", som: "sons/flauta.wav", img: "imgs/gato.png" }
         ]
     },
     {
         tema: "NATUREZA",
         opcoes: [
-            { nome: "Chuva", som: "chuva.wav", img: "https://unsplash.com" },
-            { nome: "Vento", som: "vento.wav", img: "https://unsplash.com" },
-            { nome: "Mar", som: "mar.wav", img: "https://unsplash.com" }
+            { nome: "Chuva", som: "sons/chuva.wav", img: "imgs/gato.png" },
+            { nome: "Vento", som: "sons/vento.wav", img: "imgs/gato.png" },
+            { nome: "Mar", som: "sons/mar.wav", img: "imgs/gato.png" }
         ]
     },
     {
         tema: "COISAS DE CASA",
         opcoes: [
-            { nome: "Telefone", som: "telefone.wav", img: "https://unsplash.com" },
-            { nome: "Despertador", som: "depertador.wav", img: "https://unsplash.com" },
-            { nome: "Campainha", som: "campainha.mp3", img: "https://unsplash.com" }
+            { nome: "Telefone", som: "sons/telefone.wav", img: "imgs/gato.png" },
+            { nome: "Despertador", som: "sons/despertador.wav", img: "imgs/gato.png" },
+            { nome: "Campainha", som: "sons/campainha.mp3", img: "imgs/gato.png" }
         ]
     }
 ];
@@ -126,9 +126,24 @@ function iniciarRodada() {
         botao.setAttribute("aria-label", `Opção ${index + 1}: ${item.nome}. Pressione a tecla ${index + 1} para escolher.`);
     });
 
-    falar(`Fase ${rodadaAtual}. O tema é ${dadosRodada.tema}. Ouça o som com atenção e me diga qual é!`);
+    // Ordem da narração: 1) tema  2) opções (número + nome)  3) som a identificar.
+    // Cada etapa só começa quando a anterior termina de fato (callback aoTerminar),
+    // evitando que os áudios se atropelem.
+    falar(
+        `Fase ${rodadaAtual}. O tema é ${dadosRodada.tema}. Ouça o som com atenção e me diga qual é!`,
+        () => falar(montarTextoOpcoes(), tocarSomAtual)
+    );
+}
 
-    setTimeout(tocarSomAtual, 5000);
+// Monta a frase "Aperte o número 1 para gato, 2 para cachorro e 3 para leãozinho"
+function montarTextoOpcoes() {
+    const nomes = escolhasDaRodadaAtual.map(item => item.nome);
+    let texto = "Aperte o número 1 para " + nomes[0];
+    for (let i = 1; i < nomes.length; i++) {
+        const conectivo = (i === nomes.length - 1) ? " e " : ", ";
+        texto += `${conectivo}${i + 1} para ${nomes[i]}`;
+    }
+    return texto;
 }
 
 function tocarSomAtual() {
@@ -143,16 +158,28 @@ function verificarEscolha(indexEscolhido) {
     if (indexEscolhido === itemCorretoIndex) {
         // CORRETO: Vibração alegre curta e avança
         vibrarDispositivo([80, 50, 80]);
-        somAcerto.play();
+
+        // Fix: o som de acerto tocava ao mesmo tempo que a narração da
+        // próxima fase começava, atropelando o áudio. Agora espera o som
+        // de acerto terminar antes de avançar para a próxima rodada.
+        somAcerto.currentTime = 0;
+        somAcerto.play().catch(() => {});
 
         rodadaAtual++;
-        setTimeout(() => {
+        somAcerto.onended = () => {
             if (rodadaAtual <= MAX_RODADAS) {
                 iniciarRodada();
             } else {
                 finalizarJogo();
             }
-        }, 1200);
+        };
+        // Garante avanço mesmo se o evento onended não disparar (ex: erro de carregamento)
+        setTimeout(() => {
+            if (somAcerto.onended) {
+                somAcerto.onended();
+                somAcerto.onended = null;
+            }
+        }, 1500);
     } else {
         // ERRADO: Vibração de erro (longa/dupla) e NÃO avança a fase!
         vibrarDispositivo([300, 100, 300]);
@@ -188,8 +215,18 @@ btnRestart.addEventListener("click", () => {
 
 // Eventos de Voz e Interação
 botoesOpcao.forEach((botao, index) => {
-    botao.addEventListener("mouseenter", () => { if(rodadaAtual <= MAX_RODADAS) falar(`Botão ${index + 1}: ${escolhasDaRodadaAtual[index].nome}`); });
-    botao.addEventListener("focus", () => { if(rodadaAtual <= MAX_RODADAS) falar(`Botão ${index + 1}: ${escolhasDaRodadaAtual[index].nome}`); });
+    // Fix: se o mouse passasse no card antes de escolhasDaRodadaAtual ser
+    // populado (ex: tela inicial), dava erro "cannot read nome of undefined".
+    botao.addEventListener("mouseenter", () => {
+        if (rodadaAtual <= MAX_RODADAS && escolhasDaRodadaAtual[index]) {
+            falar(`Botão ${index + 1}: ${escolhasDaRodadaAtual[index].nome}`);
+        }
+    });
+    botao.addEventListener("focus", () => {
+        if (rodadaAtual <= MAX_RODADAS && escolhasDaRodadaAtual[index]) {
+            falar(`Botão ${index + 1}: ${escolhasDaRodadaAtual[index].nome}`);
+        }
+    });
     botao.addEventListener("click", () => verificarEscolha(index));
 });
 
