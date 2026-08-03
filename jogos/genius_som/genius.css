@@ -548,7 +548,7 @@ body.cursor-padrao #cursor-personalizado {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px 60px;
+  margin-top: -10px;
 }
 
 .console-frame {
@@ -557,7 +557,7 @@ body.cursor-padrao #cursor-personalizado {
   border-radius: 40px;
   box-shadow: 0 15px 0px #383b52, 0 25px 30px rgba(0,0,0,0.4);
   width: 96%;
-  max-width: 620px;
+  max-width: 750px;
 }
 
 .game-screen {
@@ -615,6 +615,7 @@ body.cursor-padrao #cursor-personalizado {
   color: #d2dae2;
   font-size: 20px;
   margin: 0;
+  margin-bottom: 15px;
 }
 
 .guia-rapido-tutor {
@@ -653,9 +654,10 @@ body.cursor-padrao #cursor-personalizado {
 
 .escolha-botoes {
   display: flex;
-  gap: 12px;
+  gap: 20px;
   justify-content: center;
   flex-wrap: wrap;
+  margin-top: 40px;
 }
 
 .btn-escolha {
