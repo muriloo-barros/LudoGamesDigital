@@ -481,13 +481,31 @@ body {
 
 .infoneto {
   position: absolute;
-  width: 300px;
   height: 300px;
+  width: auto;
   right: 10%;
-  left: 82%;
+  left: 87%;
   top: 27%;
+  animation:
+      subir 9s ease-in-out 1 forwards,
+      arco 9s ease-in-out 1 forwards,
+      balancar 9s ease-in-out 1 forwards;
+      animation-play-state: paused;
   z-index: var(--z-conteudo);
 }
+
+.infoneto.rodando {
+    animation-play-state: running;
+  }
+
+@keyframes subir {
+    from {
+      top: 27%; /* fora da tela, por baixo */
+    }
+    to {
+      bottom: 100vh; /* sobe quase até o topo, mas mantém uma folga de 100px */
+    }
+  }
 
 .main-card{
     position: relative;
