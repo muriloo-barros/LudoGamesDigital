@@ -738,6 +738,13 @@ body.cursor-padrao #cursor-personalizado {
   user-select: none;
 }
 
+.peca-encaixada img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
 /* Feedback de erro no alvo (some sozinho) */
 .alvo.erro-shake {
   animation: shake 0.4s ease;
@@ -780,8 +787,8 @@ body.cursor-padrao #cursor-personalizado {
 }
 
 .peca-emocao img {
-  width: 100%;
-  height: 100%;
+  width: 80px;
+  height: 80px;
   object-fit: contain;
   border-radius: 14px;
   pointer-events: none;
