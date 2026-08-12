@@ -220,9 +220,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // ─── Animação Infoneto ──────────────────────────────────────────
 
-const infoneto = document.querySelector('.infoneto');
-    infoneto.addEventListener('mouseenter', () => {
-      infoneto.classList.add('rodando');
+const balao = document.querySelector('.balao');
+    balao.addEventListener('mouseenter', () => {
+      balao.classList.add('rodando');
       // propositalmente não há listener de "mouseleave" removendo a classe:
       // uma vez iniciada, a animação continua até o fim do ciclo,
       // esteja o mouse sobre o balão ou não.
