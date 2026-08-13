@@ -33,6 +33,7 @@ body {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+    overflow-y: hidden;
 }
 
 a {
@@ -688,17 +689,17 @@ body.cursor-padrao #cursor-personalizado {
 }
 
 .console-frame {
-  background-color: #A15A40;
-  padding: 20px;
-  border-radius: 35px;
-  box-shadow: 0 15px 0px #a15133, 0 25px 30px rgba(0,0,0,0.4);
-  width: 95%;
-  max-width: 550px;
+  background-image: url("imgs/caixa_jogos.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  padding: 30px;
+  width: 100%;
+  height: 100%;
+  max-width: 750px;
+  min-height: 700px;
 }
 
 .game-screen {
-  background-color: #1e272e;
-  border: 8px solid #3d3d3d;
   border-radius: 20px;
   padding: 20px;
   min-height: 520px;
@@ -706,15 +707,18 @@ body.cursor-padrao #cursor-personalizado {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: inset 0 0 40px rgba(0,0,0,0.8);
+  margin-top: 35px;
 }
 
 .tela {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center;
   height: 100%;
   flex-grow: 1;
+  margin-top: 35px;
+  gap: 30px;
 }
 
 /* Tela de Início */
@@ -729,12 +733,12 @@ body.cursor-padrao #cursor-personalizado {
   padding: 3px 10px;
   font-weight: bold;
   border-radius: 5px;
-  font-size: 12px;
+  font-size: 20px;
 }
 
 .titulo-jogo {
   color: #fff;
-  font-size: 42px;
+  font-size: 80px;
   text-shadow: 4px 4px 0px #05c46b;
   margin: 10px 0;
   line-height: 1;
@@ -759,7 +763,7 @@ body.cursor-padrao #cursor-personalizado {
   padding: 12px;
   border-radius: 12px;
   color: #fff;
-  font-size: 14px;
+  font-size: 20px;
   text-align: left;
   text-align: center;
 } 
@@ -777,7 +781,7 @@ body.cursor-padrao #cursor-personalizado {
 .hud-item {
   color: #ffd32a;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 25px;
 }
 
 .balao-voz {
@@ -785,7 +789,7 @@ body.cursor-padrao #cursor-personalizado {
   color: #2c3e50;
   padding: 15px;
   border-radius: 15px;
-  font-size: 20px;
+  font-size: 25px;
   text-align: center;
   margin: 15px 0;
   position: relative;
@@ -801,6 +805,7 @@ body.cursor-padrao #cursor-personalizado {
   font-size: 28px;
   padding: 18px;
   border: none;
+  width: 25vw;
   border-radius: 15px;
   cursor: pointer;
   font-weight: bold;
@@ -849,6 +854,7 @@ body.cursor-padrao #cursor-personalizado {
   cursor: pointer;
   box-shadow: 0 6px 0 #f53b57;
   transition: 0.2s;
+  width: 200px;
 }
 
 .card-opcao .img-opcao {
@@ -864,7 +870,7 @@ body.cursor-padrao #cursor-personalizado {
 .card-opcao .label-opcao {
   color: white;
   font-weight: bold;
-  font-size: 15px;
+  font-size: 20px;
   font-family: "Margarine", sans-serif;
 }
 
