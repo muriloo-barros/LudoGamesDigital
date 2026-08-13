@@ -9,7 +9,7 @@
     <link rel="shortcut icon" href="imgs/favicon.png" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Margarine&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Margarine&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -54,7 +54,7 @@
     <div class="sb-overlay" id="sbOverlay" aria-hidden="true"></div>
 
     <!-- Painel lateral de acessibilidade -->
-    <aside class="sidebar-acessibilidade" id="sidebarAcessibilidade" aria-label="Painel de acessibilidade" aria-hidden="true">
+    <aside class="sidebar-acessibilidade" id="sidebarAcessibilidade" aria-label="Painel de acessibilidade" aria-hidden="true" inert>
 
         <div class="sb-header">
             <h2 class="sb-titulo">Acessibilidade</h2>
@@ -129,6 +129,17 @@
                     <button class="btn-op" data-fonte="grande">G</button>
                 </div>
             </div>
+
+            <div class="sb-row sb-row-select">
+                <label class="sb-label" for="selTipoFonte">
+                    <span aria-hidden="true">🔡</span> Tipo de fonte
+                </label>
+                <select class="sb-select" id="selTipoFonte" aria-label="Escolher tipo de fonte">
+                    <option value="padrao">Padrão</option>
+                    <option value="dislexia">Dislexia (OpenDyslexic)</option>
+                    <option value="discalculia">Discalculia (Atkinson Hyperlegible)</option>
+                </select>
+            </div>
         </section>
 
         <hr class="sb-divider">
@@ -171,7 +182,7 @@
                     </div>
 
                     <div class="guia-rapido-tutor">
-                        <p><strong>Aviso ao Tutor:</strong> Este jogo foi criado principalmente para crianças surdas. Todo o jogo funciona 100% de forma visual, sem precisar de som. Cada rodada mostra uma sequência de cores e formas piscando, e a criança deve repetir a sequência na mesma ordem, tocando os botões.</p>
+                        <p><strong>Aviso ao Tutor:</strong> Este jogo foi criado principalmente para crianças surdas. Todo o jogo funciona 100% de forma visual, sem precisar de som. Cada rodada mostra uma sequência de cores e formas piscando, e a criança deve repetir a sequência na mesma ordem, tocando os botões. Também é possível jogar só com o teclado: pressione Tab uma vez para entrar no tabuleiro, use as setas (← → ↑ ↓) para navegar entre os botões, e Enter ou Espaço para escolher um.</p>
                     </div>
 
                     <!-- Escolha obrigatória: narração falada ou caixinha de texto -->
@@ -211,16 +222,16 @@
 
                     <!-- Tabuleiro do Genius: 4 botões, cor + forma distintas -->
                     <div class="tabuleiro" id="tabuleiro">
-                        <button class="botao-genius botao-0" id="botao-0" data-index="0" aria-label="Botão azul, quadrado">
+                        <button class="botao-genius botao-0" id="botao-0" data-index="0" tabindex="0" aria-label="Botão azul, quadrado">
                             <span class="forma forma-quadrado" aria-hidden="true"></span>
                         </button>
-                        <button class="botao-genius botao-1" id="botao-1" data-index="1" aria-label="Botão vermelho, círculo">
+                        <button class="botao-genius botao-1" id="botao-1" data-index="1" tabindex="-1" aria-label="Botão vermelho, círculo">
                             <span class="forma forma-circulo" aria-hidden="true"></span>
                         </button>
-                        <button class="botao-genius botao-2" id="botao-2" data-index="2" aria-label="Botão amarelo, triângulo">
+                        <button class="botao-genius botao-2" id="botao-2" data-index="2" tabindex="-1" aria-label="Botão amarelo, triângulo">
                             <span class="forma forma-triangulo" aria-hidden="true"></span>
                         </button>
-                        <button class="botao-genius botao-3" id="botao-3" data-index="3" aria-label="Botão verde, estrela">
+                        <button class="botao-genius botao-3" id="botao-3" data-index="3" tabindex="-1" aria-label="Botão verde, estrela">
                             <span class="forma forma-estrela" aria-hidden="true"></span>
                         </button>
                     </div>

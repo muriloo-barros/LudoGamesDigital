@@ -244,6 +244,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function abrirSidebar() {
     sidebar.classList.add("aberta");
     sidebar.setAttribute("aria-hidden", "false");
+    sidebar.inert = false;
     overlay.classList.add("ativo");
     btnFechar.focus();
   }
@@ -251,6 +252,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function fecharSidebar() {
     sidebar.classList.remove("aberta");
     sidebar.setAttribute("aria-hidden", "true");
+    sidebar.inert = true;
     overlay.classList.remove("ativo");
     btnAbrir.focus();
   }
@@ -313,6 +315,16 @@ document.addEventListener("DOMContentLoaded", function () {
       document.body.classList.add("fonte-" + this.dataset.fonte);
     });
   });
+
+  const selTipoFonte = document.getElementById("selTipoFonte");
+  if (selTipoFonte) {
+    selTipoFonte.addEventListener("change", function () {
+      document.body.classList.remove("fonte-dislexia", "fonte-discalculia");
+      if (this.value !== "padrao") {
+        document.body.classList.add("fonte-" + this.value);
+      }
+    });
+  }
 
   // ─── Toggle: Cursor personalizado ─────────────────────────────
   document.getElementById("togCursor").addEventListener("change", function () {

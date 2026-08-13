@@ -192,7 +192,7 @@ function verificarEscolha(indexEscolhido) {
     } else {
         // ERRADO: Vibração de erro (longa/dupla) e NÃO avança a fase!
         vibrarDispositivo([300, 100, 300]);
-        somErro.play();
+        somErro.play().catch(() => {});
 
         // Fix: a narração e o som eram disparados juntos e se atropelavam.
         // Agora o som só toca depois que a fala termina de ser narrada.
@@ -205,7 +205,7 @@ function verificarEscolha(indexEscolhido) {
 function finalizarJogo() {
     document.getElementById("tela-jogo").classList.add("escondido");
     document.getElementById("tela-final").classList.remove("escondido");
-    somFanfarra.play();
+    somFanfarra.play().catch(() => {});
     vibrarDispositivo([200, 100, 200, 100, 500]); // Ritmo de vitória
 
     const msgVoz = "🎉 Incrível! Você completou todas as fases com sucesso e dominou o videogame! Você tem ouvidos mágicos de super-herói! Parabéns! Pressione a barra de espaço para recomeçar.";

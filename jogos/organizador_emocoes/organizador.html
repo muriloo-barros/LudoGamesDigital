@@ -9,7 +9,7 @@
     <link rel="shortcut icon" href="imgs/favicon.png" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Margarine&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Margarine&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -54,7 +54,7 @@
     <div class="sb-overlay" id="sbOverlay" aria-hidden="true"></div>
 
     <!-- Painel lateral de acessibilidade -->
-    <aside class="sidebar-acessibilidade" id="sidebarAcessibilidade" aria-label="Painel de acessibilidade" aria-hidden="true">
+    <aside class="sidebar-acessibilidade" id="sidebarAcessibilidade" aria-label="Painel de acessibilidade" aria-hidden="true" inert>
 
         <div class="sb-header">
             <h2 class="sb-titulo">Acessibilidade</h2>
@@ -129,6 +129,17 @@
                     <button class="btn-op" data-fonte="grande">G</button>
                 </div>
             </div>
+
+            <div class="sb-row sb-row-select">
+                <label class="sb-label" for="selTipoFonte">
+                    <span aria-hidden="true">🔡</span> Tipo de fonte
+                </label>
+                <select class="sb-select" id="selTipoFonte" aria-label="Escolher tipo de fonte">
+                    <option value="padrao">Padrão</option>
+                    <option value="dislexia">Dislexia (OpenDyslexic)</option>
+                    <option value="discalculia">Discalculia (Atkinson Hyperlegible)</option>
+                </select>
+            </div>
         </section>
 
         <hr class="sb-divider">
@@ -171,7 +182,7 @@
                     </div>
 
                     <div class="guia-rapido-tutor">
-                        <p><strong>Aviso ao Tutor:</strong> Jogo guiado por voz e acessível. A criança deve arrastar cada emoção do banco até a caixa com o nome correspondente. Se errar, a emoção volta ao lugar de origem.</p>
+                        <p><strong>Aviso ao Tutor:</strong> Jogo guiado por voz e acessível. A criança deve arrastar cada emoção do banco até a caixa com o nome correspondente. Se errar, a emoção volta ao lugar de origem. Também é possível jogar só com o teclado: pressione Tab uma vez para entrar no tabuleiro, use as setas (← → ↑ ↓) para navegar entre as emoções e as caixas, e Enter ou Espaço para selecionar uma emoção e depois soltar na caixa certa.</p>
                     </div>
 
                     <button id="btn-start" class="btn-start">Jogar</button>
@@ -188,16 +199,16 @@
 
                     <!-- Área dos alvos (caixas com nome da emoção) -->
                     <div class="alvos-grid" id="alvos-grid">
-                        <div class="alvo" id="alvo-0" data-index="0">
+                        <div class="alvo" id="alvo-0" data-index="0" role="button" tabindex="-1">
                             <span class="alvo-nome" id="alvo-nome-0"></span>
                         </div>
-                        <div class="alvo" id="alvo-1" data-index="1">
+                        <div class="alvo" id="alvo-1" data-index="1" role="button" tabindex="-1">
                             <span class="alvo-nome" id="alvo-nome-1"></span>
                         </div>
-                        <div class="alvo" id="alvo-2" data-index="2">
+                        <div class="alvo" id="alvo-2" data-index="2" role="button" tabindex="-1">
                             <span class="alvo-nome" id="alvo-nome-2"></span>
                         </div>
-                        <div class="alvo" id="alvo-3" data-index="3">
+                        <div class="alvo" id="alvo-3" data-index="3" role="button" tabindex="-1">
                             <span class="alvo-nome" id="alvo-nome-3"></span>
                         </div>
                     </div>

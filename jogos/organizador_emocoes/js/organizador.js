@@ -43,6 +43,10 @@ let emocoesDaRodada = [];   // array embaralhado das 4 emoções da rodada atual
 let alvosDaRodada = [];     // mesmas 4 emoções, em outra ordem, para os alvos
 let acertosNaRodada = 0;    // quantas emoções já foram encaixadas certo nesta rodada
 
+// Peça atualmente "selecionada" via teclado (modo de encaixe sem
+// arrastar). Null quando nenhuma peça está selecionada.
+let pecaSelecionadaTeclado = null;
+
 // Elementos de tela
 const btnStart = document.getElementById("btn-start");
 const btnRestart = document.getElementById("btn-restart");
@@ -107,6 +111,67 @@ function embaralhar(array) {
     return copia;
 }
 
+// ══════════════════════════════════════════════════════════════════
+// NAVEGAÇÃO POR SETAS DENTRO DO TABULEIRO
+//
+// O Tab "normal" do navegador foi retirado de dentro do tabuleiro
+// (peças e caixas usam tabindex="-1", exceto a primeira posição, que
+// continua tabindex="0" para servir de porta de entrada vinda do
+// resto da página). Uma vez com o foco dentro do tabuleiro, as setas
+// do teclado (← → ↑ ↓) movem entre as 8 posições — as 4 peças do
+// banco primeiro, depois as 4 caixas — como uma sequência única.
+// Enter/Espaço continuam com o mesmo comportamento de seleção/encaixe
+// já implementado. O Tab volta a funcionar normalmente fora do
+// tabuleiro (header, botão Jogar, etc.).
+// ══════════════════════════════════════════════════════════════════
+function elementosDoTabuleiro() {
+    // Ordem fixa: peças do banco (na ordem em que aparecem no DOM) e
+    // depois as 4 caixas-alvo (alvo-0 a alvo-3). Reconstruída a cada
+    // chamada porque as peças mudam de rodada para rodada.
+    const pecas = Array.from(bancoEmocoesEl.querySelectorAll(".peca-emocao"));
+    const alvos = [0, 1, 2, 3].map(i => document.getElementById(`alvo-${i}`));
+    return [...pecas, ...alvos];
+}
+
+function moverFocoTabuleiro(elementoAtual, direcao) {
+    const elementos = elementosDoTabuleiro();
+    const indiceAtual = elementos.indexOf(elementoAtual);
+    if (indiceAtual === -1) return;
+
+    let proximoIndice = indiceAtual + direcao;
+    // Não circula: parar no primeiro/último elemento em vez de dar a
+    // volta, para não confundir quem está navegando sequencialmente
+    if (proximoIndice < 0) proximoIndice = 0;
+    if (proximoIndice >= elementos.length) proximoIndice = elementos.length - 1;
+
+    elementos[proximoIndice].focus();
+}
+
+// Aplica tabindex="-1" em todos os elementos do tabuleiro, exceto o
+// primeiro, que fica tabindex="0" como porta de entrada do Tab vindo
+// do resto da página. Chamada sempre que o tabuleiro é remontado
+// (nova rodada), já que a lista de peças muda a cada vez.
+function atualizarTabindexTabuleiro() {
+    const elementos = elementosDoTabuleiro();
+    elementos.forEach((el, index) => {
+        el.setAttribute("tabindex", index === 0 ? "0" : "-1");
+    });
+}
+
+// Trata as teclas de seta em qualquer elemento do tabuleiro (peça ou
+// alvo), reaproveitado pelos dois listeners de keydown existentes.
+function tratarSetaNoTabuleiro(evento, elementoAtual) {
+    let direcao = null;
+    if (evento.code === "ArrowRight" || evento.code === "ArrowDown") direcao = 1;
+    if (evento.code === "ArrowLeft" || evento.code === "ArrowUp") direcao = -1;
+
+    if (direcao === null) return false;
+
+    evento.preventDefault();
+    moverFocoTabuleiro(elementoAtual, direcao);
+    return true;
+}
+
 // Monta a frase "Aperte... arraste a tristeza, a raiva, a felicidade e o amor"
 function montarTextoApresentacao() {
     const nomes = emocoesDaRodada.map(e => e.nome);
@@ -162,20 +227,35 @@ function montarAlvos() {
         alvoEl.dataset.nomeEsperado = emocao.nome;
         alvoEl.classList.remove("preenchido", "arrastando-sobre", "erro-shake");
         alvoEl.innerHTML = `<span class="alvo-nome">${emocao.nome.toUpperCase()}</span>`;
+        alvoEl.setAttribute("aria-label", `Caixa: ${emocao.nome}. Pressione Enter para soltar a emoção selecionada aqui.`);
     });
 }
+
+// Registra o listener de teclado dos alvos uma única vez (os elementos
+// .alvo são fixos no HTML e reaproveitados a cada rodada — só o
+// conteúdo interno muda — então isso não pode ser refeito em
+// montarAlvos(), ou os listeners duplicariam a cada rodada nova)
+document.querySelectorAll(".alvo").forEach((alvoEl) => {
+    ativarSelecaoPorTeclado(alvoEl);
+});
 
 // Cria as 4 peças arrastáveis no banco fixo
 function montarBanco() {
     bancoEmocoesEl.innerHTML = "";
 
+    // Limpeza defensiva: se por algum motivo uma peça ainda estava
+    // "selecionada" via teclado quando o banco é remontado (ex: nova
+    // rodada), essa referência ficaria apontando para um elemento que
+    // não existe mais no DOM. Zera para evitar estado inconsistente.
+    pecaSelecionadaTeclado = null;
+
     emocoesDaRodada.forEach((emocao) => {
         const peca = document.createElement("div");
         peca.className = "peca-emocao";
         peca.setAttribute("role", "button");
-        peca.setAttribute("tabindex", "0");
+        peca.setAttribute("tabindex", "-1");
         peca.dataset.nome = emocao.nome;
-        peca.setAttribute("aria-label", `Emoção: ${emocao.nome}. Arraste até a caixa correspondente.`);
+        peca.setAttribute("aria-label", `Emoção: ${emocao.nome}. Use as setas do teclado para navegar e Enter para selecionar.`);
 
         // Estrutura pronta para imagem: se "img" tiver um caminho, usa <img>;
         // senão, cai no emoji. Basta preencher o campo img no futuro.
@@ -191,6 +271,10 @@ function montarBanco() {
         ativarArraste(peca);
         bancoEmocoesEl.appendChild(peca);
     });
+
+    // Ajusta o tabindex de todo o tabuleiro (peças + caixas) agora que
+    // as peças novas desta rodada já existem no DOM
+    atualizarTabindexTabuleiro();
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -205,6 +289,14 @@ function ativarArraste(peca) {
 
     peca.addEventListener("pointerdown", (evento) => {
         if (peca.classList.contains("desaparecendo")) return;
+
+        // Se havia uma peça selecionada via teclado (mesma ou outra) e o
+        // jogador começou a arrastar com mouse/touch, cancela a seleção
+        // de teclado para não deixar os dois modos misturados.
+        if (pecaSelecionadaTeclado) {
+            pecaSelecionadaTeclado.classList.remove("selecionada-teclado");
+            pecaSelecionadaTeclado = null;
+        }
 
         arrastando = true;
         origemPai = peca.parentElement;
@@ -265,12 +357,77 @@ function ativarArraste(peca) {
         devolverAoPai(peca, origemPai, origemNextSibling);
     });
 
-    // Acessibilidade por teclado: Enter/Espaço narra a emoção
+    // Acessibilidade por teclado: setas (← → ↑ ↓) navegam entre as 8
+    // posições do tabuleiro (peças + caixas). Enter/Espaço seleciona a
+    // peça (modo de encaixe sem arrastar). Pressionar Enter/Espaço de
+    // novo na mesma peça cancela a seleção. Com uma peça selecionada,
+    // navegue com as setas até um alvo e Enter/Espaço ali encaixa — ver
+    // ativarSelecaoPorTeclado() para o lado do alvo.
     peca.addEventListener("keydown", (evento) => {
+        if (tratarSetaNoTabuleiro(evento, peca)) return;
+
         if (evento.code === "Space" || evento.code === "Enter") {
             evento.preventDefault();
-            falar(`Emoção: ${peca.dataset.nome}. Use o mouse ou o toque para arrastar até a caixa correspondente.`);
+            selecionarOuCancelarPeca(peca);
         }
+    });
+}
+
+// Marca/desmarca uma peça como "selecionada" para encaixe via teclado.
+// Reaproveitada tanto no clique original quanto no fluxo de teclado.
+function selecionarOuCancelarPeca(peca) {
+    if (pecaSelecionadaTeclado === peca) {
+        // Pressionou de novo na mesma peça: cancela a seleção
+        peca.classList.remove("selecionada-teclado");
+        pecaSelecionadaTeclado = null;
+        falar(`${peca.dataset.nome} não está mais selecionada.`);
+        return;
+    }
+
+    // Troca a seleção (só uma peça pode estar selecionada por vez)
+    if (pecaSelecionadaTeclado) {
+        pecaSelecionadaTeclado.classList.remove("selecionada-teclado");
+    }
+
+    pecaSelecionadaTeclado = peca;
+    peca.classList.add("selecionada-teclado");
+    falar(`${peca.dataset.nome} selecionada. Navegue até uma caixa e pressione Enter para soltar aqui, ou pressione Enter de novo aqui para cancelar.`);
+}
+
+// Dá suporte de teclado aos alvos: setas navegam pelo tabuleiro,
+// Enter/Espaço num alvo com uma peça selecionada encaixa (ou erra)
+// exatamente como soltar via arraste, reaproveitando a mesma
+// verificarEncaixe() usada pelo mouse/touch.
+function ativarSelecaoPorTeclado(alvoEl) {
+    alvoEl.addEventListener("keydown", (evento) => {
+        if (tratarSetaNoTabuleiro(evento, alvoEl)) return;
+
+        if (evento.code !== "Space" && evento.code !== "Enter") return;
+        evento.preventDefault();
+
+        if (!pecaSelecionadaTeclado) {
+            falar("Nenhuma emoção selecionada. Escolha uma emoção no banco primeiro.");
+            return;
+        }
+
+        const peca = pecaSelecionadaTeclado;
+        pecaSelecionadaTeclado = null;
+        peca.classList.remove("selecionada-teclado");
+
+        // origemPai/origemNextSibling: usados só se a peça precisar voltar
+        // ao banco em caso de erro — igual ao fluxo de arraste
+        const origemPai = peca.parentElement;
+        const origemNextSibling = peca.nextElementSibling;
+
+        verificarEncaixe(peca, alvoEl, origemPai, origemNextSibling);
+
+        // Fix de acessibilidade: ao acertar, a peça é removida do DOM, e
+        // ao errar ela volta pro banco — nos dois casos o navegador perde
+        // a referência de foco, "teletransportando" o foco pro topo da
+        // página e quebrando a navegação por teclado. Devolvemos o foco
+        // para o próprio alvo (elemento fixo que nunca é removido do DOM)
+        // logo em seguida, mantendo o jogador no mesmo ponto do tabuleiro.
+        alvoEl.focus();
     });
 }
 
@@ -338,6 +495,10 @@ function tratarAcerto(peca, alvoEl) {
     // Agora sim remove a peça arrastada do DOM
     peca.remove();
 
+    // Mantém a porta de entrada do Tab (tabindex="0") sempre na primeira
+    // posição real do tabuleiro, já que uma peça foi removida do banco
+    atualizarTabindexTabuleiro();
+
     alvoEl.innerHTML = "";
     alvoEl.appendChild(conteudoEncaixado);
     const nomeEl = document.createElement("span");
@@ -383,6 +544,11 @@ function tratarErro(peca, alvoEl, origemPai, origemNextSibling) {
     setTimeout(() => alvoEl.classList.remove("erro-shake"), 400);
 
     devolverAoPai(peca, origemPai, origemNextSibling);
+
+    // Mantém a porta de entrada do Tab (tabindex="0") sempre na primeira
+    // posição real do tabuleiro, já que a ordem das peças no banco pode
+    // ter mudado ao devolver a peça para o lugar de origem.
+    atualizarTabindexTabuleiro();
 
     // A narração só começa depois que o som de erro termina, para não
     // atropelar um áudio no outro. O guard local também protege caso

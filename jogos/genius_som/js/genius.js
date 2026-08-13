@@ -269,6 +269,30 @@ botoes.forEach((botao) => {
     });
 });
 
+// Navegação por setas dentro do tabuleiro (grid 2x2: 0=topo-esquerda,
+// 1=topo-direita, 2=baixo-esquerda, 3=baixo-direita). O Tab normal do
+// navegador foi retirado de dentro do tabuleiro (só o botao-0 mantém
+// tabindex="0" como porta de entrada); as setas movem o foco de forma
+// espacial, respeitando as posições reais na tela.
+const MAPA_SETAS = {
+    ArrowRight: { 0: 1, 1: 1, 2: 3, 3: 3 },
+    ArrowLeft:  { 0: 0, 1: 0, 2: 2, 3: 2 },
+    ArrowDown:  { 0: 2, 1: 3, 2: 2, 3: 3 },
+    ArrowUp:    { 0: 0, 1: 1, 2: 0, 3: 1 },
+};
+
+botoes.forEach((botao) => {
+    botao.addEventListener("keydown", (evento) => {
+        const mapa = MAPA_SETAS[evento.code];
+        if (!mapa) return;
+
+        evento.preventDefault();
+        const indexAtual = Number(botao.dataset.index);
+        const proximoIndex = mapa[indexAtual];
+        botoes[proximoIndex].focus();
+    });
+});
+
 function registrarCliqueDoJogador(index) {
     // Feedback imediato de "toque recebido", independente de acerto/erro
     botao_acender_rapido(index);

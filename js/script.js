@@ -186,6 +186,13 @@ document.addEventListener("DOMContentLoaded", function () {
   function abrirSidebar() {
     sidebar.classList.add("aberta");
     sidebar.setAttribute("aria-hidden", "false");
+    // Fix: aria-hidden sozinho não tira o painel da navegação por Tab.
+    // Quando o painel estava fechado (fora da tela, mas ainda no layout),
+    // o foco conseguia "entrar" nele silenciosamente, dando a impressão de
+    // que o Tab tinha sumido. "inert" remove de fato os elementos de
+    // dentro da navegação por teclado e do leitor de tela enquanto o
+    // painel estiver fechado.
+    sidebar.inert = false;
     overlay.classList.add("ativo");
     btnFechar.focus();
   }
@@ -193,6 +200,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function fecharSidebar() {
     sidebar.classList.remove("aberta");
     sidebar.setAttribute("aria-hidden", "true");
+    sidebar.inert = true;
     overlay.classList.remove("ativo");
     btnAbrir.focus();
   }
@@ -255,6 +263,16 @@ document.addEventListener("DOMContentLoaded", function () {
       document.body.classList.add("fonte-" + this.dataset.fonte);
     });
   });
+
+  const selTipoFonte = document.getElementById("selTipoFonte");
+  if (selTipoFonte) {
+    selTipoFonte.addEventListener("change", function () {
+      document.body.classList.remove("fonte-dislexia", "fonte-discalculia");
+      if (this.value !== "padrao") {
+        document.body.classList.add("fonte-" + this.value);
+      }
+    });
+  }
 
   // ─── Toggle: Cursor personalizado ─────────────────────────────
   document.getElementById("togCursor").addEventListener("change", function () {

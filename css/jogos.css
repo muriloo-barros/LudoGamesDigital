@@ -96,6 +96,107 @@ body.fonte-grande .box6       { height: 14vh; width: 26vw; }
 body.fonte-pequena .text      { font-size: 3.2em; }
 body.fonte-pequena .text2     { font-size: 2em; }
 body.fonte-pequena .caixa     { font-size: 1.6em; }
+@font-face {
+  font-family: "OpenDyslexic";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://cdn.jsdelivr.net/fontsource/fonts/opendyslexic@latest/latin-400-normal.woff2") format("woff2"),
+       url("https://cdn.jsdelivr.net/fontsource/fonts/opendyslexic@latest/latin-400-normal.woff") format("woff");
+}
+
+@font-face {
+  font-family: "OpenDyslexic";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("https://cdn.jsdelivr.net/fontsource/fonts/opendyslexic@latest/latin-700-normal.woff2") format("woff2"),
+       url("https://cdn.jsdelivr.net/fontsource/fonts/opendyslexic@latest/latin-700-normal.woff") format("woff");
+}
+
+body.fonte-dislexia * {
+  font-family: "OpenDyslexic", "Margarine", sans-serif !important;
+}
+
+body.fonte-discalculia * {
+  font-family: "Atkinson Hyperlegible", "Margarine", sans-serif !important;
+}
+
+body.fonte-dislexia,
+body.fonte-discalculia {
+  font-size: 0.82em;
+}
+
+body.fonte-pequena.fonte-dislexia,
+body.fonte-pequena.fonte-discalculia {
+  font-size: calc(14px * 0.82);
+}
+
+body.fonte-normal.fonte-dislexia,
+body.fonte-normal.fonte-discalculia {
+  font-size: calc(16px * 0.82);
+}
+
+body.fonte-grande.fonte-dislexia,
+body.fonte-grande.fonte-discalculia {
+  font-size: calc(20px * 0.82);
+}
+
+body.fonte-discalculia {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── Acessibilidade: tipo de fonte (dislexia / discalculia) ────
+@font-face {
+  font-family: "OpenDyslexic";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://cdn.jsdelivr.net/fontsource/fonts/opendyslexic@latest/latin-400-normal.woff2") format("woff2"),
+       url("https://cdn.jsdelivr.net/fontsource/fonts/opendyslexic@latest/latin-400-normal.woff") format("woff");
+}
+
+@font-face {
+  font-family: "OpenDyslexic";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("https://cdn.jsdelivr.net/fontsource/fonts/opendyslexic@latest/latin-700-normal.woff2") format("woff2"),
+       url("https://cdn.jsdelivr.net/fontsource/fonts/opendyslexic@latest/latin-700-normal.woff") format("woff");
+}
+
+body.fonte-dislexia * {
+  font-family: "OpenDyslexic", "Margarine", sans-serif !important;
+}
+
+body.fonte-discalculia * {
+  font-family: "Atkinson Hyperlegible", "Margarine", sans-serif !important;
+}
+
+body.fonte-dislexia,
+body.fonte-discalculia {
+  font-size: 0.82em;
+}
+
+body.fonte-pequena.fonte-dislexia,
+body.fonte-pequena.fonte-discalculia {
+  font-size: calc(14px * 0.82);
+}
+
+body.fonte-normal.fonte-dislexia,
+body.fonte-normal.fonte-discalculia {
+  font-size: calc(16px * 0.82);
+}
+
+body.fonte-grande.fonte-dislexia,
+body.fonte-grande.fonte-discalculia {
+  font-size: calc(20px * 0.82);
+}
+
+body.fonte-discalculia {
+  font-variant-numeric: tabular-nums;
+}
+
 
 /* ─── Acessibilidade: foco visível ──────────────────────────────── */
 :focus-visible {
@@ -283,14 +384,15 @@ body.cursor-padrao #cursor-personalizado {
   position: fixed;
   top: 0;
   right: 0;
-  width: 400px;
+  width: 440px;
+  max-width: 92vw;
   height: 100vh;
   background: #3d1f0a;
   z-index: var(--z-overlay);
   transform: translateX(100%);
   transition: transform 0.35s ease;
   overflow-y: auto;
-  padding: 24px 20px;
+  padding: 30px 26px;
   box-shadow: -4px 0 20px rgba(0,0,0,0.3);
 }
 
@@ -302,12 +404,12 @@ body.cursor-padrao #cursor-personalizado {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 26px;
 }
 
 .sb-titulo {
   color: white;
-  font-size: 24px;
+  font-size: 30px;
   font-family: "Margarine", sans-serif;
   font-weight: normal;
 }
@@ -316,10 +418,10 @@ body.cursor-padrao #cursor-personalizado {
   background: #A15A40;
   border: none;
   color: white;
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  font-size: 16px;
+  font-size: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -332,15 +434,15 @@ body.cursor-padrao #cursor-personalizado {
 }
 
 .sb-secao {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .sb-secao-titulo {
   color: #e8a87c;
-  font-size: 12px;
+  font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   font-family: sans-serif;
   font-weight: 700;
 }
@@ -349,30 +451,30 @@ body.cursor-padrao #cursor-personalizado {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 14px;
+  margin-bottom: 20px;
   gap: 10px;
 }
 
 .sb-label {
   color: white;
-  font-size: 16px;
+  font-size: 19px;
   font-family: "Margarine", sans-serif;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .sb-divider {
   border: none;
   border-top: 1px solid #6B3A1D;
-  margin: 16px 0;
+  margin: 20px 0;
 }
 
 /* ─── Toggle switch ──────────────────────────────────────────────── */
 .toggle {
   position: relative;
-  width: 52px;
-  height: 28px;
+  width: 58px;
+  height: 32px;
   flex-shrink: 0;
 }
 
@@ -387,15 +489,15 @@ body.cursor-padrao #cursor-personalizado {
   position: absolute;
   inset: 0;
   background: #6B3A1D;
-  border-radius: 28px;
+  border-radius: 32px;
   transition: background 0.3s ease;
 }
 
 .slider-tog::before {
   content: '';
   position: absolute;
-  width: 22px;
-  height: 22px;
+  width: 25px;
+  height: 25px;
   left: 3px;
   bottom: 3px;
   background: white;
@@ -408,14 +510,14 @@ body.cursor-padrao #cursor-personalizado {
 }
 
 .toggle input:checked + .slider-tog::before {
-  transform: translateX(24px);
+  transform: translateX(26px);
   background: #3d1f0a;
 }
 
 /* ─── Botões de opção (P/M/G, velocidade) ────────────────────────── */
 .btn-grupo {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   flex-shrink: 0;
 }
 
@@ -423,12 +525,12 @@ body.cursor-padrao #cursor-personalizado {
   background: #6B3A1D;
   border: none;
   color: white;
-  padding: 6px 12px;
-  border-radius: 20px;
+  padding: 9px 16px;
+  border-radius: 22px;
   font-family: "Margarine", sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   transition: background 0.2s ease;
-  min-width: 36px;
+  min-width: 42px;
 }
 
 .btn-op:hover {
@@ -438,6 +540,43 @@ body.cursor-padrao #cursor-personalizado {
 .btn-op.ativo {
   background: #FEE764;
   color: #3d1f0a;
+}
+
+.sb-row-select {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sb-select {
+  width: 100%;
+  background: #6B3A1D;
+  border: none;
+  color: white;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-family: "Margarine", sans-serif;
+  font-size: 17px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 20px;
+  padding-right: 40px;
+}
+
+.sb-select:hover,
+.sb-select:focus-visible {
+  background-color: #A15A40;
+}
+
+.sb-select option {
+  background: #3d1f0a;
+  color: white;
+  font-family: sans-serif;
 }
 
 /* ─── Carrossel ──────────────────────────────────────────────────── */
