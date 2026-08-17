@@ -326,6 +326,70 @@ body {
   transition: fill 0.3s ease;
 }
 
+/* ─── Botão de música de fundo ───────────────────────────────────── */
+.btn-musica {
+  width: 44px;
+  height: 44px;
+  background: #A15A40;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  transition: transform 0.2s ease, background 0.3s ease;
+  z-index: var(--z-header);
+  position: relative;
+}
+
+.btn-musica:hover {
+  background: #FEE764;
+}
+
+.btn-musica:hover svg {
+  fill: #3d1f0a;
+}
+
+.btn-musica svg {
+  width: 20px;
+  height: 20px;
+  fill: white;
+  transition: fill 0.3s ease;
+}
+
+/* Só um dos dois ícones aparece por vez, conforme o estado do botão */
+.icone-musica-pause { display: none; }
+
+.btn-musica.tocando .icone-musica-play  { display: none; }
+.btn-musica.tocando .icone-musica-pause { display: block; }
+
+/* Leve pulso enquanto a música está tocando, só um reforço visual sutil
+   (respeitando body.sem-animacoes, que já desliga toda animação do site) */
+.btn-musica.tocando {
+  animation: pulso-musica 1.6s ease-in-out infinite;
+}
+
+@keyframes pulso-musica {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(254, 231, 100, 0.5); }
+  50%      { box-shadow: 0 0 0 6px rgba(254, 231, 100, 0); }
+}
+
+/* Estado desabilitado: quando o toggle "Música de fundo" está desligado
+   no painel de acessibilidade, o botão do header fica visualmente
+   inativo e não pode ser clicado */
+.btn-musica:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-musica:disabled:hover {
+  background: #A15A40;
+}
+
+.btn-musica:disabled:hover svg {
+  fill: white;
+}
+
 /* ─── Overlay ────────────────────────────────────────────────────── */
 .sb-overlay {
   position: fixed;
