@@ -175,25 +175,73 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // ─── Carrossel ──────────────────────────────────────
 
-  // Troque por seus próprios itens (imagem + título)
-  const ITEMS = [
-    { id: 1, title: "Floresta ao amanhecer", image: "https://picsum.photos/seed/forest1/480/600" },
-    { id: 2, title: "Dunas do deserto", image: "https://picsum.photos/seed/desert2/480/600" },
-    { id: 3, title: "Costa rochosa", image: "https://picsum.photos/seed/coast3/480/600" },
-    { id: 4, title: "Montanhas nevadas", image: "https://picsum.photos/seed/mountain4/480/600" },
-    { id: 5, title: "Vale verdejante", image: "https://picsum.photos/seed/valley5/480/600" },
-    { id: 6, title: "Lago espelhado", image: "https://picsum.photos/seed/lake6/480/600" },
-    { id: 7, title: "Cidade à noite", image: "https://picsum.photos/seed/city7/480/600" },
+  /* ─────────────────────────────────────────────
+     Dados dos carrosséis
+     Adicione quantos objetos quiser neste array.
+     Cada objeto precisa de: title e items[].
+  ───────────────────────────────────────────── */
+  const CAROUSELS = [
+    {
+      title: "Jogos",
+      items: [
+        { title: "Aventura",  image: "imgs/logo.png" },
+        { title: "RPG fantasia",  image: "https://picsum.photos/seed/game2/600/400" },
+        { title: "Corrida futurista", image: "https://picsum.photos/seed/game3/600/400" },
+        { title: "Batalha espacial",  image: "https://picsum.photos/seed/game4/600/400" },
+      ],
+    },
+    {
+      title: "Filmes",
+      items: [
+        { title: "Drama intenso",      image: "https://picsum.photos/seed/movie1/600/400" },
+        { title: "Comédia leve",       image: "https://picsum.photos/seed/movie2/600/400" },
+        { title: "Ficção científica",  image: "https://picsum.photos/seed/movie3/600/400" },
+      ],
+    },
+    {
+      title: "Músicas",
+      items: [
+        { title: "Pop nacional",       image: "https://picsum.photos/seed/music1/600/400" },
+        { title: "Jazz clássico",      image: "https://picsum.photos/seed/music2/600/400" },
+        { title: "Rock alternativo",   image: "https://picsum.photos/seed/music3/600/400" },
+        { title: "Eletrônico",         image: "https://picsum.photos/seed/music4/600/400" },
+        { title: "Sertanejo",          image: "https://picsum.photos/seed/music5/600/400" },
+      ],
+    },
   ];
  
-  const track = document.getElementById("carouselTrack");
-  const btnPrev = document.getElementById("btnPrev");
-  const btnNext = document.getElementById("btnNext");
+  /* ─────────────────────────────────────────────
+     Cria e monta um carrossel no container dado
+  ───────────────────────────────────────────── */
+  function createCarousel({ title, items }, container) {
+    let current = 0;
  
-  // Monta os cards dinamicamente a partir de ITEMS
-  function renderCards(items) {
-    track.innerHTML = "";
-    items.forEach((item) => {
+    // Estrutura HTML
+    const wrapper = document.createElement("div");
+    wrapper.className = "carousel";
+ 
+    const h2 = document.createElement("h2");
+    h2.className = "carousel-title";
+    h2.textContent = title;
+ 
+    const row = document.createElement("div");
+    row.className = "carousel-row";
+ 
+    const btnPrev = makeButton("Anterior", `<path d="M15 18l-6-6 6-6"/>`);
+    const track   = document.createElement("div");
+    track.className = "carousel-track";
+    const btnNext = makeButton("Próximo",  `<path d="M9 18l6-6-6-6"/>`);
+ 
+    const dotsEl = document.createElement("div");
+    dotsEl.className = "carousel-dots";
+ 
+    row.append(btnPrev, track, btnNext);
+    wrapper.append(h2, row, dotsEl);
+    container.appendChild(wrapper);
+ 
+    // Cria cards e dots
+    items.forEach((item, i) => {
+      // Card
       const card = document.createElement("div");
       card.className = "carousel-card";
       card.innerHTML = `
@@ -202,34 +250,53 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="card-title">${item.title}</div>
       `;
       track.appendChild(card);
+ 
+      // Dot
+      const dot = document.createElement("div");
+      dot.className = "dot" + (i === 0 ? " active" : "");
+      dotsEl.appendChild(dot);
     });
+ 
+    const cards = track.querySelectorAll(".carousel-card");
+    const dots  = dotsEl.querySelectorAll(".dot");
+ 
+    // Posiciona os cards via translateX
+    function goTo(index) {
+      current = (index + items.length) % items.length;
+      cards.forEach((card, i) => {
+        card.style.transform = `translateX(${(i - current) * 100}%)`;
+      });
+      dots.forEach((dot, i) => dot.classList.toggle("active", i === current));
+      btnPrev.disabled = false;
+      btnNext.disabled = false;
+    }
+ 
+    btnPrev.addEventListener("click", () => goTo(current - 1));
+    btnNext.addEventListener("click", () => goTo(current + 1));
+ 
+    // Estado inicial
+    goTo(0);
   }
  
-  function cardScrollDistance() {
-    const card = track.querySelector(".carousel-card");
-    const gap = 12;
-    return card ? card.offsetWidth + gap : 160;
+  /* ─────────────────────────────────────────────
+     Utilitário: cria botão com ícone de seta
+  ───────────────────────────────────────────── */
+  function makeButton(label, pathD) {
+    const btn = document.createElement("button");
+    btn.className = "carousel-btn";
+    btn.setAttribute("aria-label", label);
+    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      ${pathD}
+    </svg>`;
+    return btn;
   }
  
-  function updateButtons() {
-    const maxScroll = track.scrollWidth - track.clientWidth;
-    btnPrev.disabled = track.scrollLeft <= 4;
-    btnNext.disabled = track.scrollLeft >= maxScroll - 4;
-  }
- 
-  btnPrev.addEventListener("click", () => {
-    track.scrollBy({ left: -cardScrollDistance(), behavior: "smooth" });
-  });
- 
-  btnNext.addEventListener("click", () => {
-    track.scrollBy({ left: cardScrollDistance(), behavior: "smooth" });
-  });
- 
-  track.addEventListener("scroll", updateButtons, { passive: true });
-  window.addEventListener("resize", updateButtons);
- 
-  renderCards(ITEMS);
-  updateButtons();
+  /* ─────────────────────────────────────────────
+     Monta todos os carrosséis
+  ───────────────────────────────────────────── */
+  const app = document.getElementById("app");
+  CAROUSELS.forEach((data) => createCarousel(data, app));
 
 
   // ══════════════════════════════════════════════════════════════

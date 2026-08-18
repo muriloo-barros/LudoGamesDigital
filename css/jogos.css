@@ -4,9 +4,9 @@
     --z-header:   100;
     --z-overlay:  1000;
     --z-topo:     9999;
-    --bg: #ffffff00;
     --card-radius: 20px;
     --text-light: #ffffff;
+    --bg: #fafafa;
 }
 
 /* ─── Reset ─────────────────────────────────────────────────────── */
@@ -146,7 +146,7 @@ body.fonte-discalculia {
   font-variant-numeric: tabular-nums;
 }
 
-/* ─── Acessibilidade: tipo de fonte (dislexia / discalculia) ────
+/* ─── Acessibilidade: tipo de fonte (dislexia / discalculia) ──── */
 @font-face {
   font-family: "OpenDyslexic";
   font-style: normal;
@@ -363,7 +363,7 @@ body.cursor-padrao #cursor-personalizado {
   transition: fill 0.3s ease;
 }
 
-/* ─── Botão de música de fundo ──────────────────
+/* ─── Botão de música de fundo ────────────────── */
 .btn-musica {
   width: 44px;
   height: 44px;
@@ -639,13 +639,26 @@ body.cursor-padrao #cursor-personalizado {
 
 /* ─── Carrossel ──────────────────────────────────────────────────── */
 
-.carousel-wrapper {
-    width: 100%;
+#app {
+    max-width: 400px;
     margin: 0 auto;
-    background: var(--bg);
     padding: 24px 16px;
-    box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+.carousel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+ 
+  .carousel-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #171717;
+    margin: 0;
   }
  
   .carousel-row {
@@ -656,10 +669,10 @@ body.cursor-padrao #cursor-personalizado {
  
   .carousel-btn {
     flex-shrink: 0;
-    width: 50px;
-    height: 50px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
-    border: 1px solid rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.08);
     background: #fff;
     color: #404040;
     display: flex;
@@ -667,41 +680,28 @@ body.cursor-padrao #cursor-personalizado {
     justify-content: center;
     cursor: pointer;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    transition: background 0.15s ease, opacity 0.15s ease;
+    transition: background 0.15s ease;
   }
  
-  .carousel-btn:hover:not(:disabled) {
-    background: #f0f0f0;
-  }
- 
-  .carousel-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
+  .carousel-btn:hover:not(:disabled) { background: #f0f0f0; }
+  .carousel-btn:disabled { opacity: 0.3; cursor: not-allowed; }
  
   .carousel-track {
     flex: 1;
     display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    padding-bottom: 8px;
+    overflow: hidden; /* apenas 1 card visível por vez */
     min-width: 0;
-  }
- 
-  .carousel-track::-webkit-scrollbar {
-    display: none;
   }
  
   .carousel-card {
     position: relative;
     flex-shrink: 0;
-    width: 450px;
-    height: 450px;
+    width: 100%;          /* ocupa todo o espaço disponível */
+    height: 220px;
     border-radius: var(--card-radius);
     overflow: hidden;
-    scroll-snap-align: start;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
  
   .carousel-card img {
@@ -717,28 +717,41 @@ body.cursor-padrao #cursor-personalizado {
   .carousel-card .overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.1) 55%, transparent 100%);
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.05) 55%, transparent 100%);
   }
  
   .carousel-card .card-title {
     position: absolute;
-    left:  0;
+    left: 0;
     right: 0;
     bottom: 0;
+    padding: 14px;
     text-align: center;
-    padding: 12px;
     color: var(--text-light);
-    font-size: 25px;
+    font-size: 14px;
     font-weight: 600;
-    line-height: 2;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    line-height: 1.3;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
   }
  
-  @media (max-width: 480px) {
-    .carousel-card {
-      width: 130px;
-      height: 180px;
-    }
+  /* Dots */
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+  }
+ 
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #d4d4d4;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+ 
+  .dot.active {
+    background: #404040;
+    transform: scale(1.3);
   }
 
 /* ─── Cursor personalizado ───────────────────────────────────────── */
